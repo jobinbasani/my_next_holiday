@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:my_next_holiday/services/HolidayService.dart';
 import 'package:my_next_holiday/services/CanadaHolidayService.dart';
 import 'package:my_next_holiday/services/UsaHolidayService.dart';
-import 'package:my_next_holiday/utils/NlwUtils.dart';
 import 'package:my_next_holiday/vo/HolidayDetails.dart';
+import 'package:intl/intl.dart';
 
 void main() => runApp(new NlwApp());
 
@@ -39,11 +39,12 @@ class _NlwHomePageState extends State<NlwHomePage> {
   String _selectedCountry;
   Map<String, HolidayService> _serviceMap = new HashMap();
   Map<String, List<HolidayDetails>> holidayDetailsMap = new HashMap();
+  var _monthFormatter = new DateFormat("MMM");
+  var _weekDayFormatter = new DateFormat("E");
   final List<HolidayService> _holidayServices = [
     new UsaHolidayService(),
     new CanadaHolidayService()
   ];
-
   String getDaysToGo(HolidayDetails details) {
     String dayString = "day";
     if (details.daysDiff > 1) {
@@ -89,10 +90,10 @@ class _NlwHomePageState extends State<NlwHomePage> {
                         new Container(
                           padding: const EdgeInsets.all(9.0),
                           child: new Text(
-                              NlwUtils.getMonth(
+                              _monthFormatter.format(
                                   holidayDetailsMap[_selectedCountry]
                                       .elementAt(index)
-                                      .holidayDate),
+                                      .holidayDate).toUpperCase(),
                               style:
                                   new TextStyle(fontWeight: FontWeight.bold)),
                         )
@@ -100,10 +101,10 @@ class _NlwHomePageState extends State<NlwHomePage> {
                     ),
                     new Expanded(
                       child: new Banner(
-                        message: NlwUtils.getDay(
+                        message: _weekDayFormatter.format(
                             holidayDetailsMap[_selectedCountry]
                                 .elementAt(index)
-                                .holidayDate),
+                                .holidayDate).toUpperCase(),
                         location: BannerLocation.topEnd,
                         child: new ListTile(
                           title: new Text(holidayDetailsMap[_selectedCountry]
