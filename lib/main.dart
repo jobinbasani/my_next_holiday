@@ -47,11 +47,8 @@ class _NlwHomePageState extends State<NlwHomePage> {
   ];
 
   String getDaysToGo(HolidayDetails details) {
-    String dayString = "day";
-    if (details.daysDiff > 1) {
-      dayString = dayString + "s";
-    }
-    String data = "${details.daysDiff} ${dayString}";
+    String data = "${details.daysDiff} ${Intl.plural(
+        details.daysDiff, one: "day", other: "days")}";
     return details.isPast ? "${data} ago" : "${data} to go";
   }
 
@@ -80,7 +77,7 @@ class _NlwHomePageState extends State<NlwHomePage> {
 
   Widget _buildHolidayList() {
     return new ListView.builder(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(9.0),
         itemCount: holidayDetailsMap[_selectedCountry].length,
         itemBuilder: (context, index) {
           return new Card(
