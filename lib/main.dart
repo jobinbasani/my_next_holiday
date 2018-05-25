@@ -75,6 +75,53 @@ class _NlwHomePageState extends State<NlwHomePage> {
     );
   }
 
+  Widget getDateInfoBlock(HolidayDetails details) {
+    return new Column(
+      children: <Widget>[
+        new Container(
+          padding: const EdgeInsets.all(9.0),
+          child: new Text(
+            details.holidayDate.year.toString(),
+            style: new TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ),
+        getDateAvatar(details),
+        new Container(
+          padding: const EdgeInsets.all(9.0),
+          child: new Text(
+              _monthFormatter.format(details.holidayDate).toUpperCase(),
+              style: new TextStyle(fontWeight: FontWeight.bold)),
+        )
+      ],
+    );
+  }
+
+  Widget getButtonBar(HolidayDetails details) {
+    return new Expanded(
+        child: new Align(
+      alignment: Alignment.centerRight,
+      child: new ButtonTheme.bar(
+        // make buttons use the appropriate styles for cards
+        child: new ButtonBar(
+          children: <Widget>[
+            new FlatButton(
+              child: const Text('READ MORE'),
+              onPressed: () {
+                /* ... */
+              },
+            ),
+            new FlatButton(
+              child: const Text('SHARE'),
+              onPressed: () {
+                /* ... */
+              },
+            ),
+          ],
+        ),
+      ),
+    ));
+  }
+
   Widget _buildHolidayList() {
     return new ListView.builder(
         padding: const EdgeInsets.all(9.0),
@@ -87,34 +134,8 @@ class _NlwHomePageState extends State<NlwHomePage> {
                 new Row(
                   mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
-                    new Column(
-                      children: <Widget>[
-                        new Container(
-                          padding: const EdgeInsets.all(9.0),
-                          child: new Text(
-                            holidayDetailsMap[_selectedCountry]
-                                .elementAt(index)
-                                .holidayDate
-                                .year
-                                .toString(),
-                            style: new TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                        getDateAvatar(holidayDetailsMap[_selectedCountry]
-                            .elementAt(index)),
-                        new Container(
-                          padding: const EdgeInsets.all(9.0),
-                          child: new Text(
-                              _monthFormatter
-                                  .format(holidayDetailsMap[_selectedCountry]
-                                      .elementAt(index)
-                                      .holidayDate)
-                                  .toUpperCase(),
-                              style:
-                                  new TextStyle(fontWeight: FontWeight.bold)),
-                        )
-                      ],
-                    ),
+                    getDateInfoBlock(
+                        holidayDetailsMap[_selectedCountry].elementAt(index)),
                     getHolidayDetailsTile(
                         holidayDetailsMap[_selectedCountry].elementAt(index)),
                   ],
@@ -129,29 +150,8 @@ class _NlwHomePageState extends State<NlwHomePage> {
                               .elementAt(index)),
                           style: new TextStyle(fontStyle: FontStyle.italic)),
                     ),
-                    new Expanded(
-                        child: new Align(
-                      alignment: Alignment.centerRight,
-                      child: new ButtonTheme.bar(
-                        // make buttons use the appropriate styles for cards
-                        child: new ButtonBar(
-                          children: <Widget>[
-                            new FlatButton(
-                              child: const Text('READ MORE'),
-                              onPressed: () {
-                                /* ... */
-                              },
-                            ),
-                            new FlatButton(
-                              child: const Text('SHARE'),
-                              onPressed: () {
-                                /* ... */
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                    ))
+                    getButtonBar(
+                        holidayDetailsMap[_selectedCountry].elementAt(index))
                   ],
                 ),
               ],
