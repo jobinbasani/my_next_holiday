@@ -45,6 +45,7 @@ class _NlwHomePageState extends State<NlwHomePage> {
     new UsaHolidayService(),
     new CanadaHolidayService()
   ];
+
   String getDaysToGo(HolidayDetails details) {
     String dayString = "day";
     if (details.daysDiff > 1) {
@@ -52,6 +53,14 @@ class _NlwHomePageState extends State<NlwHomePage> {
     }
     String data = "${details.daysDiff} ${dayString}";
     return details.isPast ? "${data} ago" : "${data} to go";
+  }
+
+  Widget getDateAvatar(HolidayDetails details) {
+    return new CircleAvatar(
+      backgroundColor:
+          details.isNextHoliday ? Colors.lightGreen : Colors.black45,
+      child: new Text(details.holidayDate.day.toString()),
+    );
   }
 
   Widget _buildHolidayList() {
@@ -79,21 +88,16 @@ class _NlwHomePageState extends State<NlwHomePage> {
                             style: new TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ),
-                        new CircleAvatar(
-                          backgroundColor: Colors.lightGreen,
-                          child: new Text(holidayDetailsMap[_selectedCountry]
-                              .elementAt(index)
-                              .holidayDate
-                              .day
-                              .toString()),
-                        ),
+                        getDateAvatar(holidayDetailsMap[_selectedCountry]
+                            .elementAt(index)),
                         new Container(
                           padding: const EdgeInsets.all(9.0),
                           child: new Text(
-                              _monthFormatter.format(
-                                  holidayDetailsMap[_selectedCountry]
+                              _monthFormatter
+                                  .format(holidayDetailsMap[_selectedCountry]
                                       .elementAt(index)
-                                      .holidayDate).toUpperCase(),
+                                      .holidayDate)
+                                  .toUpperCase(),
                               style:
                                   new TextStyle(fontWeight: FontWeight.bold)),
                         )
@@ -101,10 +105,11 @@ class _NlwHomePageState extends State<NlwHomePage> {
                     ),
                     new Expanded(
                       child: new Banner(
-                        message: _weekDayFormatter.format(
-                            holidayDetailsMap[_selectedCountry]
+                        message: _weekDayFormatter
+                            .format(holidayDetailsMap[_selectedCountry]
                                 .elementAt(index)
-                                .holidayDate).toUpperCase(),
+                                .holidayDate)
+                            .toUpperCase(),
                         location: BannerLocation.topEnd,
                         child: new ListTile(
                           title: new Text(holidayDetailsMap[_selectedCountry]
