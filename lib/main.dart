@@ -61,32 +61,82 @@ class _MyHomePageState extends State<MyHomePage> {
             child: new Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                new ListTile(
-                  leading: const Icon(Icons.album),
-                  title: new Text(holidayDetailsMap[_selectedCountry]
-                      .elementAt(index)
-                      .holidayName),
-                  subtitle: new Text(
-                      holidayDetailsMap[_selectedCountry].elementAt(index).holidayDetails),
+                new Row(
+                  mainAxisSize: MainAxisSize.max,
+                  children: <Widget>[
+                    new Column(
+                      children: <Widget>[
+                        new Container(
+                          padding: const EdgeInsets.all(9.0),
+                          child: new Text(
+                            "2019",
+                            style: new TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        new CircleAvatar(
+                          backgroundColor: Colors.lightGreen,
+                          child: new Text(holidayDetailsMap[_selectedCountry]
+                              .elementAt(index)
+                              .holidayDate
+                              .day
+                              .toString()),
+                        ),
+                        new Container(
+                          padding: const EdgeInsets.all(9.0),
+                          child: new Text("JUNE",
+                              style:
+                                  new TextStyle(fontWeight: FontWeight.bold)),
+                        )
+                      ],
+                    ),
+                    new Expanded(
+                      child: new Banner(
+                        message: "SAT",
+                        location: BannerLocation.topEnd,
+                        child: new ListTile(
+                          title: new Text(holidayDetailsMap[_selectedCountry]
+                              .elementAt(index)
+                              .holidayName),
+                          subtitle: new Text(holidayDetailsMap[_selectedCountry]
+                              .elementAt(index)
+                              .holidayDetails),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                new ButtonTheme.bar(
-                  // make buttons use the appropriate styles for cards
-                  child: new ButtonBar(
-                    children: <Widget>[
-                      new FlatButton(
-                        child: const Text('BUY TICKETS'),
-                        onPressed: () {
-                          /* ... */
-                        },
+                new Divider(),
+                new Row(
+                  children: <Widget>[
+                    new Container(
+                      padding: const EdgeInsets.all(9.0),
+                      child: new Text("5 days to go",
+                          style: new TextStyle(fontStyle: FontStyle.italic)),
+                    ),
+                    new Expanded(
+                        child: new Align(
+                      alignment: Alignment.centerRight,
+                      child: new ButtonTheme.bar(
+                        // make buttons use the appropriate styles for cards
+                        child: new ButtonBar(
+                          children: <Widget>[
+                            new FlatButton(
+                              child: const Text('READ MORE'),
+                              onPressed: () {
+                                /* ... */
+                              },
+                            ),
+                            new FlatButton(
+                              child: const Text('SHARE'),
+                              onPressed: () {
+                                /* ... */
+                              },
+                            ),
+                          ],
+                        ),
                       ),
-                      new FlatButton(
-                        child: const Text('LISTEN'),
-                        onPressed: () {
-                          /* ... */
-                        },
-                      ),
-                    ],
-                  ),
+                    ))
+                  ],
                 ),
               ],
             ),
