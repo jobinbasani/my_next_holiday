@@ -59,7 +59,22 @@ class _NlwHomePageState extends State<NlwHomePage> {
     return new CircleAvatar(
       backgroundColor:
           details.isNextHoliday ? Colors.lightGreen : Colors.black45,
+      foregroundColor: Colors.white,
       child: new Text(details.holidayDate.day.toString()),
+    );
+  }
+
+  Widget getHolidayDetailsTile(HolidayDetails details) {
+    return new Expanded(
+      child: new Banner(
+        color: details.isNextHoliday ? const Color(0xA0B71C1C) : Colors.grey,
+        message: _weekDayFormatter.format(details.holidayDate).toUpperCase(),
+        location: BannerLocation.topEnd,
+        child: new ListTile(
+          title: new Text(details.holidayName),
+          subtitle: new Text(details.holidayDetails),
+        ),
+      ),
     );
   }
 
@@ -103,24 +118,8 @@ class _NlwHomePageState extends State<NlwHomePage> {
                         )
                       ],
                     ),
-                    new Expanded(
-                      child: new Banner(
-                        message: _weekDayFormatter
-                            .format(holidayDetailsMap[_selectedCountry]
-                                .elementAt(index)
-                                .holidayDate)
-                            .toUpperCase(),
-                        location: BannerLocation.topEnd,
-                        child: new ListTile(
-                          title: new Text(holidayDetailsMap[_selectedCountry]
-                              .elementAt(index)
-                              .holidayName),
-                          subtitle: new Text(holidayDetailsMap[_selectedCountry]
-                              .elementAt(index)
-                              .holidayDetails),
-                        ),
-                      ),
-                    ),
+                    getHolidayDetailsTile(
+                        holidayDetailsMap[_selectedCountry].elementAt(index)),
                   ],
                 ),
                 new Divider(),
