@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:my_next_holiday/services/HolidayService.dart';
 import 'package:my_next_holiday/services/CanadaHolidayService.dart';
 import 'package:my_next_holiday/services/UsaHolidayService.dart';
+import 'package:my_next_holiday/utils/NlwUtils.dart';
 import 'package:my_next_holiday/vo/HolidayDetails.dart';
 
 void main() => runApp(new NlwApp());
@@ -18,30 +19,21 @@ class NlwApp extends StatelessWidget {
       theme: new ThemeData(
         primarySwatch: Colors.green,
       ),
-      home: new MyHomePage(title: 'My Next Holiday'),
+      home: new NlwHomePage(title: 'My Next Holiday'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
+class NlwHomePage extends StatefulWidget {
+  NlwHomePage({Key key, this.title}) : super(key: key);
 
   final String title;
 
   @override
-  _MyHomePageState createState() => new _MyHomePageState();
+  _NlwHomePageState createState() => new _NlwHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _NlwHomePageState extends State<NlwHomePage> {
   var dropdownMenuOptions;
   List<String> _countryList = [];
   String _selectedCountry;
@@ -51,6 +43,15 @@ class _MyHomePageState extends State<MyHomePage> {
     new UsaHolidayService(),
     new CanadaHolidayService()
   ];
+
+  String getDaysToGo(HolidayDetails details) {
+    String dayString = "day";
+    if (details.daysDiff > 1) {
+      dayString = dayString + "s";
+    }
+    String data = "${details.daysDiff} ${dayString}";
+    return details.isPast ? "${data} ago" : "${data} to go";
+  }
 
   Widget _buildHolidayList() {
     return new ListView.builder(
@@ -69,7 +70,11 @@ class _MyHomePageState extends State<MyHomePage> {
                         new Container(
                           padding: const EdgeInsets.all(9.0),
                           child: new Text(
-                            "2019",
+                            holidayDetailsMap[_selectedCountry]
+                                .elementAt(index)
+                                .holidayDate
+                                .year
+                                .toString(),
                             style: new TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ),
@@ -83,7 +88,11 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                         new Container(
                           padding: const EdgeInsets.all(9.0),
-                          child: new Text("JUNE",
+                          child: new Text(
+                              NlwUtils.getMonth(
+                                  holidayDetailsMap[_selectedCountry]
+                                      .elementAt(index)
+                                      .holidayDate),
                               style:
                                   new TextStyle(fontWeight: FontWeight.bold)),
                         )
@@ -91,7 +100,10 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                     new Expanded(
                       child: new Banner(
-                        message: "SAT",
+                        message: NlwUtils.getDay(
+                            holidayDetailsMap[_selectedCountry]
+                                .elementAt(index)
+                                .holidayDate),
                         location: BannerLocation.topEnd,
                         child: new ListTile(
                           title: new Text(holidayDetailsMap[_selectedCountry]
@@ -110,7 +122,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   children: <Widget>[
                     new Container(
                       padding: const EdgeInsets.all(9.0),
-                      child: new Text("5 days to go",
+                      child: new Text(
+                          getDaysToGo(holidayDetailsMap[_selectedCountry]
+                              .elementAt(index)),
                           style: new TextStyle(fontStyle: FontStyle.italic)),
                     ),
                     new Expanded(
