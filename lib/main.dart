@@ -6,6 +6,7 @@ import 'package:my_next_holiday/services/CanadaHolidayService.dart';
 import 'package:my_next_holiday/services/UsaHolidayService.dart';
 import 'package:my_next_holiday/vo/HolidayDetails.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void main() => runApp(new NlwApp());
 
@@ -107,7 +108,7 @@ class _NlwHomePageState extends State<NlwHomePage> {
             new FlatButton(
               child: const Text('READ MORE'),
               onPressed: () {
-                /* ... */
+                _launchURL(details.url);
               },
             ),
             new FlatButton(
@@ -158,6 +159,14 @@ class _NlwHomePageState extends State<NlwHomePage> {
             ),
           );
         });
+  }
+
+  _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
   @override
