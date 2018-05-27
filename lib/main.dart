@@ -64,7 +64,12 @@ class _NlwHomePageState extends State<NlwHomePage> {
   Widget getHolidayDetailsTile(HolidayDetails details) {
     return new Expanded(
       child: new ListTile(
-        title: new Text(details.holidayName),
+        title: new Text(
+          details.holidayName,
+          style: new TextStyle(
+              fontWeight:
+                  details.isNextHoliday ? FontWeight.bold : FontWeight.normal),
+        ),
         subtitle: new Text(details.holidayDetails),
       ),
     );
