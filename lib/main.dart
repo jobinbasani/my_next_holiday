@@ -11,7 +11,6 @@ import 'package:url_launcher/url_launcher.dart';
 void main() => runApp(new NlwApp());
 
 class NlwApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
@@ -78,7 +77,9 @@ class _NlwHomePageState extends State<NlwHomePage> {
           padding: const EdgeInsets.all(9.0),
           child: new Text(
             details.holidayDate.year.toString(),
-            style: new TextStyle(fontWeight: FontWeight.bold),
+            style: new TextStyle(
+                fontWeight: FontWeight.bold,
+                color: details.isNextHoliday ? Colors.green : Colors.black),
           ),
         ),
         getDateAvatar(details),
@@ -86,33 +87,37 @@ class _NlwHomePageState extends State<NlwHomePage> {
           padding: const EdgeInsets.all(9.0),
           child: new Text(
               _monthFormatter.format(details.holidayDate).toUpperCase(),
-              style: new TextStyle(fontWeight: FontWeight.bold)),
+              style: new TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: details.isNextHoliday ? Colors.green : Colors.black)),
         )
       ],
     );
   }
 
   Widget getButtonBar(HolidayDetails details) {
+    List<Widget> buttons = [];
+    buttons.add(new FlatButton(
+      textColor: details.isNextHoliday ? Colors.green : Colors.black,
+      child: const Text('READ MORE'),
+      onPressed: () {
+        _launchURL(details.url);
+      },
+    ));
+    if (details.isNextHoliday) {
+      buttons.add(new FlatButton(
+        child: const Text('SHARE'),
+        onPressed: () {
+          /* ... */
+        },
+      ));
+    }
     return new Expanded(
         child: new Align(
       alignment: Alignment.centerRight,
       child: new ButtonTheme.bar(
-        // make buttons use the appropriate styles for cards
         child: new ButtonBar(
-          children: <Widget>[
-            new FlatButton(
-              child: const Text('READ MORE'),
-              onPressed: () {
-                _launchURL(details.url);
-              },
-            ),
-            new FlatButton(
-              child: const Text('SHARE'),
-              onPressed: () {
-                /* ... */
-              },
-            ),
-          ],
+          children: buttons,
         ),
       ),
     ));
@@ -127,7 +132,7 @@ class _NlwHomePageState extends State<NlwHomePage> {
       decoration: new BoxDecoration(
           color: details.isNextHoliday ? Colors.green : Colors.grey),
       padding: const EdgeInsets.all(3.0),
-      margin: const EdgeInsets.all(9.0),
+      margin: const EdgeInsets.all(5.0),
     );
   }
 
@@ -220,25 +225,10 @@ class _NlwHomePageState extends State<NlwHomePage> {
 
     return new Scaffold(
       appBar: new AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
         title: new Text(widget.title),
       ),
       body: new Center(
         child: new Column(
-          // Column is also layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug paint" (press "p" in the console where you ran
-          // "flutter run", or select "Toggle Debug Paint" from the Flutter tool
-          // window in IntelliJ) to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             new Row(
