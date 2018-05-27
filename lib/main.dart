@@ -64,14 +64,9 @@ class _NlwHomePageState extends State<NlwHomePage> {
 
   Widget getHolidayDetailsTile(HolidayDetails details) {
     return new Expanded(
-      child: new Banner(
-        color: details.isNextHoliday ? const Color(0xA0B71C1C) : Colors.grey,
-        message: _weekDayFormatter.format(details.holidayDate).toUpperCase(),
-        location: BannerLocation.topEnd,
-        child: new ListTile(
-          title: new Text(details.holidayName),
-          subtitle: new Text(details.holidayDetails),
-        ),
+      child: new ListTile(
+        title: new Text(details.holidayName),
+        subtitle: new Text(details.holidayDetails),
       ),
     );
   }
@@ -123,40 +118,62 @@ class _NlwHomePageState extends State<NlwHomePage> {
     ));
   }
 
+  Widget getWeekdayLabel(HolidayDetails details) {
+    return new Container(
+      child: new Text(
+        _weekDayFormatter.format(details.holidayDate).toUpperCase(),
+        style: new TextStyle(color: Colors.white),
+      ),
+      decoration: new BoxDecoration(
+          color: details.isNextHoliday ? Colors.green : Colors.grey),
+      padding: const EdgeInsets.all(3.0),
+      margin: const EdgeInsets.all(9.0),
+    );
+  }
+
   Widget _buildHolidayList() {
     return new ListView.builder(
         padding: const EdgeInsets.all(9.0),
         itemCount: holidayDetailsMap[_selectedCountry].length,
         itemBuilder: (context, index) {
-          return new Card(
-            child: new Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                new Row(
-                  mainAxisSize: MainAxisSize.max,
+          return new Stack(
+            alignment: Alignment.topRight,
+            children: <Widget>[
+              new Card(
+                child: new Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    getDateInfoBlock(
-                        holidayDetailsMap[_selectedCountry].elementAt(index)),
-                    getHolidayDetailsTile(
-                        holidayDetailsMap[_selectedCountry].elementAt(index)),
-                  ],
-                ),
-                new Divider(),
-                new Row(
-                  children: <Widget>[
-                    new Container(
-                      padding: const EdgeInsets.all(9.0),
-                      child: new Text(
-                          getDaysToGo(holidayDetailsMap[_selectedCountry]
-                              .elementAt(index)),
-                          style: new TextStyle(fontStyle: FontStyle.italic)),
+                    new Row(
+                      mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        getDateInfoBlock(holidayDetailsMap[_selectedCountry]
+                            .elementAt(index)),
+                        getHolidayDetailsTile(
+                            holidayDetailsMap[_selectedCountry]
+                                .elementAt(index)),
+                      ],
                     ),
-                    getButtonBar(
-                        holidayDetailsMap[_selectedCountry].elementAt(index))
+                    new Divider(),
+                    new Row(
+                      children: <Widget>[
+                        new Container(
+                          padding: const EdgeInsets.all(9.0),
+                          child: new Text(
+                              getDaysToGo(holidayDetailsMap[_selectedCountry]
+                                  .elementAt(index)),
+                              style:
+                                  new TextStyle(fontStyle: FontStyle.italic)),
+                        ),
+                        getButtonBar(holidayDetailsMap[_selectedCountry]
+                            .elementAt(index))
+                      ],
+                    ),
                   ],
                 ),
-              ],
-            ),
+              ),
+              getWeekdayLabel(
+                  holidayDetailsMap[_selectedCountry].elementAt(index))
+            ],
           );
         });
   }
