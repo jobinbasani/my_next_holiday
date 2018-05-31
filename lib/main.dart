@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'package:my_next_holiday/services/UsaHolidayService.dart';
 import 'package:my_next_holiday/vo/HolidayDetails.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() => runApp(new NlwApp());
 
@@ -36,11 +38,13 @@ class NlwHomePage extends StatefulWidget {
 class _NlwHomePageState extends State<NlwHomePage> {
   var dropdownMenuOptions;
   List<String> _countryList = [];
-  String _selectedCountry;
+  String _selectedCountry = null;
   Map<String, HolidayService> _serviceMap = new HashMap();
   Map<String, List<HolidayDetails>> holidayDetailsMap = new HashMap();
   var _monthFormatter = new DateFormat("MMM");
   var _weekDayFormatter = new DateFormat("E");
+  SharedPreferences prefs;
+
   final List<HolidayService> _holidayServices = [
     new UsaHolidayService(),
     new CanadaHolidayService()
@@ -50,6 +54,11 @@ class _NlwHomePageState extends State<NlwHomePage> {
     String data = "${details.daysDiff} ${Intl.plural(
         details.daysDiff, one: "day", other: "days")}";
     return details.isPast ? "${data} ago" : "${data} to go";
+  }
+
+  Future<String> getDefaultSelectedCountry() async {
+    String country = prefs.getString("country") ?? _countryList.first;
+    return _countryList.contains(country) ? country : _countryList.first;
   }
 
   Widget getDateAvatar(HolidayDetails details) {
@@ -141,7 +150,32 @@ class _NlwHomePageState extends State<NlwHomePage> {
     );
   }
 
+  Widget getDropDownWidget() {
+    if (_selectedCountry == null) {
+      return new Container();
+    }
+    return new Expanded(
+        child: new Container(
+      padding: const EdgeInsets.all(10.0),
+      child: new DropdownButtonHideUnderline(
+          child: new DropdownButton<String>(
+        value: _selectedCountry,
+        style: new TextStyle(fontWeight: FontWeight.bold, color: Colors.green),
+        items: dropdownMenuOptions,
+        onChanged: (s) {
+          setState(() {
+            _selectedCountry = s;
+            prefs.setString("country", s);
+          });
+        },
+      )),
+    ));
+  }
+
   Widget _buildHolidayList() {
+    if (_selectedCountry == null) {
+      return new Container();
+    }
     return new ListView.builder(
         padding: const EdgeInsets.all(9.0),
         itemCount: holidayDetailsMap[_selectedCountry].length,
@@ -199,17 +233,24 @@ class _NlwHomePageState extends State<NlwHomePage> {
   @override
   void initState() {
     super.initState();
-    _holidayServices.forEach((service) {
-      _countryList.add(service.getCountry());
-      _serviceMap.putIfAbsent(service.getCountry(), () => service);
-      holidayDetailsMap.putIfAbsent(service.getCountry(), () => []);
+    SharedPreferences.getInstance().then((sharedPreferences) {
+      prefs = sharedPreferences;
+      _holidayServices.forEach((service) {
+        _countryList.add(service.getCountry());
+        _serviceMap.putIfAbsent(service.getCountry(), () => service);
+        holidayDetailsMap.putIfAbsent(service.getCountry(), () => []);
+      });
+      _countryList.sort();
+      getDefaultSelectedCountry().then((selection) {
+        setState(() {
+          _selectedCountry = selection;
+          dropdownMenuOptions = _countryList
+              .map((String item) => new DropdownMenuItem<String>(
+                  value: item, child: new Text(item)))
+              .toList();
+        });
+      });
     });
-    _countryList.sort();
-    _selectedCountry = _countryList.first;
-    dropdownMenuOptions = _countryList
-        .map((String item) =>
-            new DropdownMenuItem<String>(value: item, child: new Text(item)))
-        .toList();
   }
 
   @override
@@ -220,7 +261,8 @@ class _NlwHomePageState extends State<NlwHomePage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
-    if (holidayDetailsMap[_selectedCountry].isEmpty) {
+    if (_selectedCountry != null &&
+        holidayDetailsMap[_selectedCountry].isEmpty) {
       print("Loaing for first time");
       holidayDetailsMap[_selectedCountry]
           .addAll(_serviceMap[_selectedCountry].getHolidays(18 * 30));
@@ -237,24 +279,7 @@ class _NlwHomePageState extends State<NlwHomePage> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             new Row(
-              children: <Widget>[
-                new Expanded(
-                    child: new Container(
-                  padding: const EdgeInsets.all(10.0),
-                  child: new DropdownButtonHideUnderline(
-                      child: new DropdownButton<String>(
-                    value: _selectedCountry,
-                    style: new TextStyle(
-                        fontWeight: FontWeight.bold, color: Colors.green),
-                    items: dropdownMenuOptions,
-                    onChanged: (s) {
-                      setState(() {
-                        _selectedCountry = s;
-                      });
-                    },
-                  )),
-                ))
-              ],
+              children: <Widget>[getDropDownWidget()],
             ),
             new Expanded(
               child: _buildHolidayList(),
