@@ -10,5 +10,21 @@ class UsaHolidayService extends CommonHolidayService {
   @override
   void loadHolidays(List<HolidayDetails> holidays, int year) {
     addNewYear(holidays, year);
+    addMartinLutherDay(holidays, year);
+    addPresidentsDay(holidays, year);
+  }
+
+  void addMartinLutherDay(List<HolidayDetails> holidays, int year) {
+    holidays.add(new HolidayDetails(
+        HolidayDetails.martinLutherDay,
+        getFirstDayOfWeek(DateTime.january, DateTime.monday, year)
+            .add(new Duration(days: 14))));
+  }
+
+  void addPresidentsDay(List<HolidayDetails> holidays, int year) {
+    holidays.add(new HolidayDetails(
+        HolidayDetails.presidentsDay,
+        getFirstDayOfWeek(DateTime.february, DateTime.monday, year)
+            .add(new Duration(days: 14))));
   }
 }

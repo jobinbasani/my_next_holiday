@@ -27,10 +27,14 @@ class HolidayDetails extends HolidayInfo {
       "Easter Monday",
       "Easter Monday is the day after Easter Sunday and is celebrated as a holiday in some largely Christian cultures, especially Catholic and Eastern Christian cultures. Observed in Quebec.",
       "http://en.wikipedia.org/wiki/Easter_Monday");
-  static final HolidayInfo temp = new HolidayInfo(
-      "Temp",
-      "Observed in Quebec.",
-      "http:");
+  static final HolidayInfo martinLutherDay = new HolidayInfo(
+      "Martin Luther King, Jr. Day",
+      "An American federal holiday marking the birthday of Martin Luther King, Jr. It is observed on the third Monday of January each year, which is around the time of King's birthday, January 15.",
+      "http://en.wikipedia.org/wiki/Martin_Luther_King,_Jr._Day");
+  static final HolidayInfo presidentsDay = new HolidayInfo(
+      "Washington's Birthday",
+      "A United States federal holiday celebrated on the third Monday of February in honor of George Washington, the first President of the United States.",
+      "http://en.wikipedia.org/wiki/Washington's_Birthday");
 
   DateTime holidayDate;
   bool isNextHoliday;

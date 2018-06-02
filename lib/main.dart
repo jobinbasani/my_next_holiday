@@ -56,10 +56,11 @@ class _NlwHomePageState extends State<NlwHomePage> {
     new CanadaHolidayService()
   ];
 
-  String getDaysToGo(HolidayDetails details) {
+  Widget getDaysToGo(HolidayDetails details) {
     String data = "${details.daysDiff} ${Intl.plural(
         details.daysDiff, one: "day", other: "days")}";
-    return details.isPast ? "${data} ago" : "${data} to go";
+    return new Text(details.isPast ? "${data} ago" : "${data} to go",
+        style: new TextStyle(fontStyle: FontStyle.italic));
   }
 
   Future<String> getDefaultSelectedCountry() async {
@@ -177,70 +178,73 @@ class _NlwHomePageState extends State<NlwHomePage> {
     );
   }
 
-  Widget getDropDownWidget() {
-    return new Expanded(
-        child: new Container(
-      padding: const EdgeInsets.all(10.0),
-      child: new DropdownButtonHideUnderline(
-          child: new DropdownButton<String>(
-        value: _selectedCountry,
-        style: new TextStyle(fontWeight: FontWeight.bold, color: Colors.green),
-        items: dropdownMenuOptions,
-        onChanged: (s) {
-          setState(() {
-            _selectedCountry = s;
-            prefs.setString(COUNTRY_KEY, s);
-          });
-        },
-      )),
-    ));
+  Widget _getDropDownWidget() {
+    return new Row(children: <Widget>[
+      new Expanded(
+          child: new Container(
+        padding: const EdgeInsets.all(10.0),
+        child: new DropdownButtonHideUnderline(
+            child: new DropdownButton<String>(
+          value: _selectedCountry,
+          style:
+              new TextStyle(fontWeight: FontWeight.bold, color: Colors.green),
+          items: dropdownMenuOptions,
+          onChanged: (s) {
+            setState(() {
+              _selectedCountry = s;
+              loadHolidayInfo();
+              prefs.setString(COUNTRY_KEY, s);
+            });
+          },
+        )),
+      ))
+    ]);
   }
 
-  Widget _buildHolidayList() {
-    return new ListView.builder(
-        padding: const EdgeInsets.all(9.0),
-        itemCount: holidayDetailsMap[_selectedCountry].length,
-        itemBuilder: (context, index) {
-          return new Stack(
-            alignment: Alignment.topRight,
-            children: <Widget>[
-              new Card(
-                child: new Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    new Row(
-                      mainAxisSize: MainAxisSize.max,
+  Widget _getHolidayListView() {
+    return new Expanded(
+        child: new ListView.builder(
+            padding: const EdgeInsets.all(9.0),
+            itemCount: holidayDetailsMap[_selectedCountry].length,
+            itemBuilder: (context, index) {
+              return new Stack(
+                alignment: Alignment.topRight,
+                children: <Widget>[
+                  new Card(
+                    child: new Column(
+                      mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
-                        getDateInfoBlock(holidayDetailsMap[_selectedCountry]
-                            .elementAt(index)),
-                        getHolidayDetailsTile(
-                            holidayDetailsMap[_selectedCountry]
+                        new Row(
+                          mainAxisSize: MainAxisSize.max,
+                          children: <Widget>[
+                            getDateInfoBlock(holidayDetailsMap[_selectedCountry]
                                 .elementAt(index)),
-                      ],
-                    ),
-                    new Divider(),
-                    new Row(
-                      children: <Widget>[
-                        new Container(
-                          padding: const EdgeInsets.all(9.0),
-                          child: new Text(
-                              getDaysToGo(holidayDetailsMap[_selectedCountry]
-                                  .elementAt(index)),
-                              style:
-                                  new TextStyle(fontStyle: FontStyle.italic)),
+                            getHolidayDetailsTile(
+                                holidayDetailsMap[_selectedCountry]
+                                    .elementAt(index)),
+                          ],
                         ),
-                        getButtonBar(holidayDetailsMap[_selectedCountry]
-                            .elementAt(index))
+                        new Divider(),
+                        new Row(
+                          children: <Widget>[
+                            new Container(
+                              padding: const EdgeInsets.all(9.0),
+                              child: getDaysToGo(
+                                  holidayDetailsMap[_selectedCountry]
+                                      .elementAt(index)),
+                            ),
+                            getButtonBar(holidayDetailsMap[_selectedCountry]
+                                .elementAt(index))
+                          ],
+                        ),
                       ],
                     ),
-                  ],
-                ),
-              ),
-              getWeekdayLabel(
-                  holidayDetailsMap[_selectedCountry].elementAt(index))
-            ],
-          );
-        });
+                  ),
+                  getWeekdayLabel(
+                      holidayDetailsMap[_selectedCountry].elementAt(index))
+                ],
+              );
+            }));
   }
 
   _launchURL(String url) async {
@@ -249,6 +253,15 @@ class _NlwHomePageState extends State<NlwHomePage> {
     } else {
       throw 'Could not launch $url';
     }
+  }
+
+  void loadHolidayInfo() {
+    if (holidayDetailsMap[_selectedCountry].isEmpty) {
+      print("Loaing for first time");
+      holidayDetailsMap[_selectedCountry]
+          .addAll(_serviceMap[_selectedCountry].getHolidays(18 * 30));
+    }
+    print(holidayDetailsMap[_selectedCountry]);
   }
 
   @override
@@ -266,6 +279,7 @@ class _NlwHomePageState extends State<NlwHomePage> {
     }).then((selection) {
       setState(() {
         _selectedCountry = selection;
+        loadHolidayInfo();
         dropdownMenuOptions = _countryList
             .map((String item) => new DropdownMenuItem<String>(
                 value: item, child: new Text(item)))
@@ -279,13 +293,6 @@ class _NlwHomePageState extends State<NlwHomePage> {
     if (_selectedCountry == null) {
       return new Container();
     }
-    if (holidayDetailsMap[_selectedCountry].isEmpty) {
-      print("Loaing for first time");
-      holidayDetailsMap[_selectedCountry]
-          .addAll(_serviceMap[_selectedCountry].getHolidays(18 * 30));
-    }
-
-    print(holidayDetailsMap[_selectedCountry]);
 
     return new Scaffold(
       appBar: new AppBar(
@@ -295,12 +302,8 @@ class _NlwHomePageState extends State<NlwHomePage> {
         child: new Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            new Row(
-              children: <Widget>[getDropDownWidget()],
-            ),
-            new Expanded(
-              child: _buildHolidayList(),
-            ),
+            _getDropDownWidget(),
+            _getHolidayListView(),
           ],
         ),
       ),
