@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:my_next_holiday/services/HolidayService.dart';
 import 'package:my_next_holiday/services/CanadaHolidayService.dart';
 import 'package:my_next_holiday/services/UsaHolidayService.dart';
@@ -10,6 +11,7 @@ import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:share/share.dart';
+import 'dart:io' show Platform;
 
 void main() => runApp(new NlwApp());
 
@@ -37,9 +39,10 @@ class NlwHomePage extends StatefulWidget {
 }
 
 class _NlwHomePageState extends State<NlwHomePage> {
+  static const platform = const MethodChannel('com.jobinbasani.nlw/services');
   var dropdownMenuOptions;
   List<String> _countryList = [];
-  String _selectedCountry = null;
+  String _selectedCountry;
   Map<String, HolidayService> _serviceMap = new HashMap();
   Map<String, List<HolidayDetails>> holidayDetailsMap = new HashMap();
   var _monthFormatter = new DateFormat("MMM");
@@ -60,6 +63,13 @@ class _NlwHomePageState extends State<NlwHomePage> {
   Future<String> getDefaultSelectedCountry() async {
     String country = prefs.getString("country") ?? _countryList.first;
     return _countryList.contains(country) ? country : _countryList.first;
+  }
+
+  Future<Null> launchCalendar(HolidayDetails details) async {
+    if (Platform.isAndroid) {
+      await platform.invokeMethod('openCalender',
+          details.holidayDate.millisecondsSinceEpoch.toString());
+    }
   }
 
   Widget getDateAvatar(HolidayDetails details) {
@@ -86,32 +96,40 @@ class _NlwHomePageState extends State<NlwHomePage> {
   }
 
   Widget getDateInfoBlock(HolidayDetails details) {
-    return new Column(
-      children: <Widget>[
-        new Container(
-          padding: const EdgeInsets.all(9.0),
-          child: new Text(
-            details.holidayDate.year.toString(),
-            style: new TextStyle(
-                fontWeight: FontWeight.bold,
-                color: details.isNextHoliday ? Colors.green : Colors.black),
-          ),
-        ),
-        getDateAvatar(details),
-        new Container(
-          padding: const EdgeInsets.all(9.0),
-          child: new Text(
-              _monthFormatter.format(details.holidayDate).toUpperCase(),
+    return new GestureDetector(
+      onTap: () {
+        launchCalendar(details);
+      },
+      child: new Column(
+        children: <Widget>[
+          new Container(
+            padding: const EdgeInsets.all(9.0),
+            child: new Text(
+              details.holidayDate.year.toString(),
               style: new TextStyle(
                   fontWeight: FontWeight.bold,
-                  color: details.isNextHoliday ? Colors.green : Colors.black)),
-        )
-      ],
+                  color: details.isNextHoliday ? Colors.green : Colors.black),
+            ),
+          ),
+          getDateAvatar(details),
+          new Container(
+            padding: const EdgeInsets.all(9.0),
+            child: new Text(
+                _monthFormatter.format(details.holidayDate).toUpperCase(),
+                style: new TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color:
+                        details.isNextHoliday ? Colors.green : Colors.black)),
+          )
+        ],
+      ),
     );
   }
 
-  void shareDetails(HolidayDetails details){
-    Share.share("${details.holidayName} on ${_monthFormatter.format(details.holidayDate)} ${details.holidayDate.day}, ${details.holidayDate.year}."
+  void shareDetails(HolidayDetails details) {
+    Share.share("${details.holidayName} on ${_monthFormatter.format(
+        details.holidayDate)} ${details.holidayDate.day}, ${details.holidayDate
+        .year}."
         "\n${details.holidayDetails}"
         "\nRead more at ${details.url}");
   }
@@ -180,7 +198,6 @@ class _NlwHomePageState extends State<NlwHomePage> {
     return new ListView.builder(
         padding: const EdgeInsets.all(9.0),
         itemCount: holidayDetailsMap[_selectedCountry].length,
-        controller: new ScrollController(initialScrollOffset: 5.0),
         itemBuilder: (context, index) {
           return new Stack(
             alignment: Alignment.topRight,
