@@ -9,6 +9,7 @@ import 'package:my_next_holiday/vo/HolidayDetails.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:share/share.dart';
 
 void main() => runApp(new NlwApp());
 
@@ -109,6 +110,12 @@ class _NlwHomePageState extends State<NlwHomePage> {
     );
   }
 
+  void shareDetails(HolidayDetails details){
+    Share.share("${details.holidayName} on ${_monthFormatter.format(details.holidayDate)} ${details.holidayDate.day}, ${details.holidayDate.year}."
+        "\n${details.holidayDetails}"
+        "\nRead more at ${details.url}");
+  }
+
   Widget getButtonBar(HolidayDetails details) {
     List<Widget> buttons = [];
     buttons.add(new FlatButton(
@@ -122,7 +129,7 @@ class _NlwHomePageState extends State<NlwHomePage> {
       buttons.add(new FlatButton(
         child: const Text('SHARE'),
         onPressed: () {
-          /* ... */
+          shareDetails(details);
         },
       ));
     }
@@ -173,6 +180,7 @@ class _NlwHomePageState extends State<NlwHomePage> {
     return new ListView.builder(
         padding: const EdgeInsets.all(9.0),
         itemCount: holidayDetailsMap[_selectedCountry].length,
+        controller: new ScrollController(initialScrollOffset: 5.0),
         itemBuilder: (context, index) {
           return new Stack(
             alignment: Alignment.topRight,
