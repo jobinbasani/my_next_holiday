@@ -58,6 +58,20 @@ abstract class CommonHolidayService implements HolidayService {
     return calculatedDay;
   }
 
+  DateTime getLastDayOfWeek(int month, int week, int year) {
+    DateTime calculatedDay = getLastDayOfMonth(month, year);
+    while (calculatedDay.weekday != week) {
+      calculatedDay = calculatedDay.subtract(new Duration(days: 1));
+    }
+    return calculatedDay;
+  }
+
+  DateTime getLastDayOfMonth(int month, int year) {
+    return (month < 12)
+        ? new DateTime(year, month + 1, 0)
+        : new DateTime(year + 1, 1, 0);
+  }
+
   DateTime getEasterDay(int year) {
     int a = year % 19;
     int b = year ~/ 100;

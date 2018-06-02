@@ -12,6 +12,7 @@ class UsaHolidayService extends CommonHolidayService {
     addNewYear(holidays, year);
     addMartinLutherDay(holidays, year);
     addPresidentsDay(holidays, year);
+    addMemorialDay(holidays, year);
   }
 
   void addMartinLutherDay(List<HolidayDetails> holidays, int year) {
@@ -26,5 +27,10 @@ class UsaHolidayService extends CommonHolidayService {
         HolidayDetails.presidentsDay,
         getFirstDayOfWeek(DateTime.february, DateTime.monday, year)
             .add(new Duration(days: 14))));
+  }
+
+  void addMemorialDay(List<HolidayDetails> holidays, int year) {
+    holidays.add(new HolidayDetails(HolidayDetails.memorialDay,
+        getLastDayOfWeek(DateTime.may, DateTime.monday, year)));
   }
 }

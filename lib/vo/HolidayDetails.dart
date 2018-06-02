@@ -35,6 +35,10 @@ class HolidayDetails extends HolidayInfo {
       "Washington's Birthday",
       "A United States federal holiday celebrated on the third Monday of February in honor of George Washington, the first President of the United States.",
       "http://en.wikipedia.org/wiki/Washington's_Birthday");
+  static final HolidayInfo memorialDay = new HolidayInfo(
+      "Memorial Day",
+      "A day of remembering the men and women who died while serving in the United States Armed Forces.",
+      "http://en.wikipedia.org/wiki/Memorial_Day");
 
   DateTime holidayDate;
   bool isNextHoliday;
