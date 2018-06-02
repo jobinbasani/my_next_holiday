@@ -40,6 +40,7 @@ class NlwHomePage extends StatefulWidget {
 
 class _NlwHomePageState extends State<NlwHomePage> {
   static const platform = const MethodChannel('com.jobinbasani.nlw/services');
+  static const COUNTRY_KEY = "country";
   var dropdownMenuOptions;
   List<String> _countryList = [];
   String _selectedCountry;
@@ -48,6 +49,7 @@ class _NlwHomePageState extends State<NlwHomePage> {
   var _monthFormatter = new DateFormat("MMM");
   var _weekDayFormatter = new DateFormat("E");
   SharedPreferences prefs;
+  final Color redColor = const Color(0xA0B71C1C);
 
   final List<HolidayService> _holidayServices = [
     new UsaHolidayService(),
@@ -61,7 +63,7 @@ class _NlwHomePageState extends State<NlwHomePage> {
   }
 
   Future<String> getDefaultSelectedCountry() async {
-    String country = prefs.getString("country") ?? _countryList.first;
+    String country = prefs.getString(COUNTRY_KEY) ?? _countryList.first;
     return _countryList.contains(country) ? country : _countryList.first;
   }
 
@@ -169,7 +171,7 @@ class _NlwHomePageState extends State<NlwHomePage> {
         style: new TextStyle(color: Colors.white),
       ),
       decoration: new BoxDecoration(
-          color: details.isNextHoliday ? Colors.green : Colors.grey),
+          color: details.isNextHoliday ? redColor : Colors.grey),
       padding: const EdgeInsets.all(3.0),
       margin: const EdgeInsets.all(5.0),
     );
@@ -187,7 +189,7 @@ class _NlwHomePageState extends State<NlwHomePage> {
         onChanged: (s) {
           setState(() {
             _selectedCountry = s;
-            prefs.setString("country", s);
+            prefs.setString(COUNTRY_KEY, s);
           });
         },
       )),

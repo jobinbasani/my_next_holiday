@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.provider.CalendarContract;
 
 import io.flutter.app.FlutterActivity;
+import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugins.GeneratedPluginRegistrant;
 
@@ -18,12 +19,15 @@ public class MainActivity extends FlutterActivity {
         super.onCreate(savedInstanceState);
         GeneratedPluginRegistrant.registerWith(this);
 
-        new MethodChannel(getFlutterView(), CHANNEL).setMethodCallHandler((methodCall, result) -> {
-            if (methodCall.method.equals("openCalender")) {
-                openCalendar(methodCall.arguments.toString());
-                result.success(null);
-            } else {
-                result.notImplemented();
+        new MethodChannel(getFlutterView(), CHANNEL).setMethodCallHandler(new MethodChannel.MethodCallHandler() {
+            @Override
+            public void onMethodCall(MethodCall methodCall, MethodChannel.Result result) {
+                if (methodCall.method.equals("openCalender")) {
+                    openCalendar(methodCall.arguments.toString());
+                    result.success(null);
+                } else {
+                    result.notImplemented();
+                }
             }
         });
 
