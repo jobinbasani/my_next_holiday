@@ -55,6 +55,22 @@ class HolidayDetails extends HolidayInfo {
       "Labour Day",
       "Annual holiday to celebrate the achievements of workers.",
       "https://en.wikipedia.org/wiki/Labour_Day");
+  static final HolidayInfo canadaThanksGivingDay = new HolidayInfo(
+      "Thanksgiving",
+      "Occurring on the second Monday in October, is an annual Canadian holiday which celebrates the harvest and other blessings of the past year.",
+      "http://en.wikipedia.org/wiki/Thanksgiving_(Canada)");
+  static final HolidayInfo remembranceDay = new HolidayInfo(
+      "Remembrance Day",
+      "A memorial day observed in Commonwealth countries since the end of World War I to remember the members of their armed forces who have died in the line of duty.",
+      "http://en.wikipedia.org/wiki/Remembrance_Day");
+  static final HolidayInfo christmasDay = new HolidayInfo(
+      "Christmas Day",
+      "Annual commemoration of the birth of Jesus Christ.",
+      "http://en.wikipedia.org/wiki/Christmas");
+  static final HolidayInfo boxingDayCanada = new HolidayInfo(
+      "Boxing Day",
+      "The first or second weekday after Christmas Day.Observed in Ontario",
+      "http://en.wikipedia.org/wiki/Boxing_Day");
 
   DateTime holidayDate;
   bool isNextHoliday;

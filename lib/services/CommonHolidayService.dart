@@ -2,7 +2,6 @@ import 'package:my_next_holiday/services/HolidayService.dart';
 import 'package:my_next_holiday/vo/HolidayDetails.dart';
 
 abstract class CommonHolidayService implements HolidayService {
-
   @override
   List<HolidayDetails> getHolidays(DateTime startDate, DateTime endDate) {
     List<HolidayDetails> holidayList = [];
@@ -39,6 +38,11 @@ abstract class CommonHolidayService implements HolidayService {
   void addEasterMonday(List<HolidayDetails> holidays, int year) {
     holidays.add(new HolidayDetails(HolidayDetails.easterMonday,
         getEasterDay(year).add(new Duration(days: 1))));
+  }
+
+  void addChristmasDay(List<HolidayDetails> holidays, int year) {
+    holidays.add(new HolidayDetails(HolidayDetails.christmasDay,
+        new DateTime(year, DateTime.december, 25)));
   }
 
   DateTime getFirstDayOfWeek(int month, int week, int year) {

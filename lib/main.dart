@@ -62,7 +62,7 @@ class _NlwHomePageState extends State<NlwHomePage> {
   Widget getDaysToGo(HolidayDetails details) {
     String data = "${details.daysDiff} ${Intl.plural(
         details.daysDiff, one: "day", other: "days")}";
-    return new Text(details.isPast ? "${data} ago" : "${data} to go",
+    return new Text(details.isPast ? "$data ago" : "$data to go",
         style: new TextStyle(fontStyle: FontStyle.italic));
   }
 
