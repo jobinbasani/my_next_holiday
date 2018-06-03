@@ -49,8 +49,12 @@ class HolidayDetails extends HolidayInfo {
       "http://en.wikipedia.org/wiki/Canada_Day");
   static final HolidayInfo civicHoliday = new HolidayInfo(
       "Civic Holiday",
-      "A public holiday celebrated in most of Canada on the first Monday in August",
+      "A public holiday celebrated in most of Canada on the first Monday in August.",
       "http://en.wikipedia.org/wiki/Civic_Holiday");
+  static final HolidayInfo labourDay = new HolidayInfo(
+      "Labour Day",
+      "Annual holiday to celebrate the achievements of workers.",
+      "https://en.wikipedia.org/wiki/Labour_Day");
 
   DateTime holidayDate;
   bool isNextHoliday;
@@ -61,7 +65,8 @@ class HolidayDetails extends HolidayInfo {
       : super(holidayInfo.holidayName, holidayInfo.holidayDetails,
             holidayInfo.url) {
     DateTime now = new DateTime.now();
-    Duration difference = now.difference(holidayDate);
+    DateTime today = new DateTime(now.year, now.month, now.day);
+    Duration difference = today.difference(holidayDate);
     isPast = now.isAfter(holidayDate);
     daysDiff = difference.inDays.abs();
     isNextHoliday = false;

@@ -17,6 +17,7 @@ class CanadaHolidayService extends CommonHolidayService {
     addVictoriaDay(holidays, year);
     addCanadaDay(holidays, year);
     addCivicHoliday(holidays, year);
+    addLabourDay(holidays, year);
   }
 
   void addFamilyDayBc(List<HolidayDetails> holidays, int year) {
@@ -49,5 +50,10 @@ class CanadaHolidayService extends CommonHolidayService {
   void addCivicHoliday(List<HolidayDetails> holidays, int year) {
     holidays.add(new HolidayDetails(HolidayDetails.civicHoliday,
         getFirstDayOfWeek(DateTime.august, DateTime.monday, year)));
+  }
+
+  void addLabourDay(List<HolidayDetails> holidays, int year) {
+    holidays.add(new HolidayDetails(HolidayDetails.labourDay,
+        getFirstDayOfWeek(DateTime.september, DateTime.monday, year)));
   }
 }
