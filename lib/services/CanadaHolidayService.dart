@@ -15,6 +15,8 @@ class CanadaHolidayService extends CommonHolidayService {
     addGoodFriday(holidays, year);
     addEasterMonday(holidays, year);
     addVictoriaDay(holidays, year);
+    addCanadaDay(holidays, year);
+    addCivicHoliday(holidays, year);
   }
 
   void addFamilyDayBc(List<HolidayDetails> holidays, int year) {
@@ -37,5 +39,15 @@ class CanadaHolidayService extends CommonHolidayService {
       calculatedDay = calculatedDay.subtract(new Duration(days: 1));
     }
     holidays.add(new HolidayDetails(HolidayDetails.victoriaDay, calculatedDay));
+  }
+
+  void addCanadaDay(List<HolidayDetails> holidays, int year) {
+    holidays.add(new HolidayDetails(
+        HolidayDetails.canadaDay, new DateTime(year, DateTime.july, 1)));
+  }
+
+  void addCivicHoliday(List<HolidayDetails> holidays, int year) {
+    holidays.add(new HolidayDetails(HolidayDetails.civicHoliday,
+        getFirstDayOfWeek(DateTime.august, DateTime.monday, year)));
   }
 }

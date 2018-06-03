@@ -43,6 +43,14 @@ class HolidayDetails extends HolidayInfo {
       "Victoria Day",
       "A federal Canadian public holiday celebrated on the last Monday before May 25, in honour of Queen Victoria's birthday.",
       "http://en.wikipedia.org/wiki/Victoria_Day");
+  static final HolidayInfo canadaDay = new HolidayInfo(
+      "Canada Day",
+      "National day of Canada, celebrating the anniversary of the July 1, 1867, enactment of the British North America Act, 1867.",
+      "http://en.wikipedia.org/wiki/Canada_Day");
+  static final HolidayInfo civicHoliday = new HolidayInfo(
+      "Civic Holiday",
+      "A public holiday celebrated in most of Canada on the first Monday in August",
+      "http://en.wikipedia.org/wiki/Civic_Holiday");
 
   DateTime holidayDate;
   bool isNextHoliday;
