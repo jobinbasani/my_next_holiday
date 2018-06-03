@@ -2,19 +2,10 @@ import 'package:my_next_holiday/services/HolidayService.dart';
 import 'package:my_next_holiday/vo/HolidayDetails.dart';
 
 abstract class CommonHolidayService implements HolidayService {
-  DateTime getStartDatetime(int days) {
-    return new DateTime.now().subtract(new Duration(days: days));
-  }
-
-  DateTime getEndDatetime(int days) {
-    return new DateTime.now().add(new Duration(days: days));
-  }
 
   @override
-  List<HolidayDetails> getHolidays(int durationSpread) {
+  List<HolidayDetails> getHolidays(DateTime startDate, DateTime endDate) {
     List<HolidayDetails> holidayList = [];
-    DateTime startDate = getStartDatetime(durationSpread);
-    DateTime endDate = getEndDatetime(durationSpread);
     int startYear = startDate.year;
     int endYear = endDate.year;
     for (int year = startYear; year <= endYear; year++) {

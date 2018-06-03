@@ -50,6 +50,9 @@ class _NlwHomePageState extends State<NlwHomePage> {
   var _weekDayFormatter = new DateFormat("E");
   SharedPreferences prefs;
   final Color redColor = const Color(0xA0B71C1C);
+  final _padding = const EdgeInsets.all(9.0);
+  final DateTime _startDate = DateTime.now().subtract(new Duration(days: 30*6));
+  final DateTime _endDate = DateTime.now().add(new Duration(days: 30*18));
 
   final List<HolidayService> _holidayServices = [
     new UsaHolidayService(),
@@ -106,7 +109,7 @@ class _NlwHomePageState extends State<NlwHomePage> {
       child: new Column(
         children: <Widget>[
           new Container(
-            padding: const EdgeInsets.all(9.0),
+            padding: _padding,
             child: new Text(
               details.holidayDate.year.toString(),
               style: new TextStyle(
@@ -116,7 +119,7 @@ class _NlwHomePageState extends State<NlwHomePage> {
           ),
           getDateAvatar(details),
           new Container(
-            padding: const EdgeInsets.all(9.0),
+            padding: _padding,
             child: new Text(
                 _monthFormatter.format(details.holidayDate).toUpperCase(),
                 style: new TextStyle(
@@ -204,7 +207,7 @@ class _NlwHomePageState extends State<NlwHomePage> {
   Widget _getHolidayListView() {
     return new Expanded(
         child: new ListView.builder(
-            padding: const EdgeInsets.all(9.0),
+            padding: _padding,
             itemCount: holidayDetailsMap[_selectedCountry].length,
             itemBuilder: (context, index) {
               return new Stack(
@@ -228,7 +231,7 @@ class _NlwHomePageState extends State<NlwHomePage> {
                         new Row(
                           children: <Widget>[
                             new Container(
-                              padding: const EdgeInsets.all(9.0),
+                              padding: _padding,
                               child: getDaysToGo(
                                   holidayDetailsMap[_selectedCountry]
                                       .elementAt(index)),
@@ -259,7 +262,7 @@ class _NlwHomePageState extends State<NlwHomePage> {
     if (holidayDetailsMap[_selectedCountry].isEmpty) {
       print("Loaing for first time");
       holidayDetailsMap[_selectedCountry]
-          .addAll(_serviceMap[_selectedCountry].getHolidays(18 * 30));
+          .addAll(_serviceMap[_selectedCountry].getHolidays(_startDate,_endDate));
     }
     print(holidayDetailsMap[_selectedCountry]);
   }
