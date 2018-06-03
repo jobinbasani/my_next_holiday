@@ -39,6 +39,10 @@ class HolidayDetails extends HolidayInfo {
       "Memorial Day",
       "A day of remembering the men and women who died while serving in the United States Armed Forces.",
       "http://en.wikipedia.org/wiki/Memorial_Day");
+  static final HolidayInfo victoriaDay = new HolidayInfo(
+      "Victoria Day",
+      "A federal Canadian public holiday celebrated on the last Monday before May 25, in honour of Queen Victoria's birthday.",
+      "http://en.wikipedia.org/wiki/Victoria_Day");
 
   DateTime holidayDate;
   bool isNextHoliday;
