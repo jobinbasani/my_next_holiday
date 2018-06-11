@@ -49,7 +49,7 @@ class _NlwHomePageState extends State<NlwHomePage> {
   var _monthFormatter = new DateFormat("MMM");
   var _weekDayFormatter = new DateFormat("E");
   SharedPreferences prefs;
-  final Color redColor = const Color(0xA0B71C1C);
+  final Color holidayWeekLabelColor = Colors.deepOrange;
   final _padding = const EdgeInsets.all(9.0);
   final DateTime _startDate =
       DateTime.now().subtract(new Duration(days: 30 * 6));
@@ -179,7 +179,7 @@ class _NlwHomePageState extends State<NlwHomePage> {
         style: new TextStyle(color: Colors.white),
       ),
       decoration: new BoxDecoration(
-          color: details.isNextHoliday ? redColor : Colors.grey),
+          color: details.isNextHoliday ? holidayWeekLabelColor : Colors.grey),
       padding: const EdgeInsets.all(3.0),
       margin: const EdgeInsets.all(5.0),
     );
@@ -195,7 +195,7 @@ class _NlwHomePageState extends State<NlwHomePage> {
     return new Row(children: <Widget>[
       new Expanded(
           child: new Container(
-        padding: const EdgeInsets.all(10.0),
+        padding: _padding,
         child: new DropdownButtonHideUnderline(
             child: new DropdownButton<String>(
           value: _selectedCountry,
@@ -264,7 +264,7 @@ class _NlwHomePageState extends State<NlwHomePage> {
 
   _launchURL(String url) async {
     if (await canLaunch(url)) {
-      await launch(url,forceWebView: true);
+      await launch(url, forceWebView: true);
     } else {
       throw 'Could not launch $url';
     }
@@ -279,8 +279,10 @@ class _NlwHomePageState extends State<NlwHomePage> {
               holidayDetailsMap[_selectedCountry]
                   .firstWhere((holidayInfo) => !holidayInfo.isPast)) -
           1;
-      scrollController.animateTo(firstCardHeight * requiredIndex,
-          duration: new Duration(seconds: 2), curve: Curves.easeInOut);
+      scrollController.animateTo(
+          (firstCardHeight * requiredIndex) + (firstCardHeight * .30),
+          duration: new Duration(seconds: 2),
+          curve: Curves.easeInOut);
     }
   }
 
