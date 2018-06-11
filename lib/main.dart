@@ -51,8 +51,12 @@ class _NlwHomePageState extends State<NlwHomePage> {
   SharedPreferences prefs;
   final Color redColor = const Color(0xA0B71C1C);
   final _padding = const EdgeInsets.all(9.0);
-  final DateTime _startDate = DateTime.now().subtract(new Duration(days: 30*6));
-  final DateTime _endDate = DateTime.now().add(new Duration(days: 30*18));
+  final DateTime _startDate =
+      DateTime.now().subtract(new Duration(days: 30 * 6));
+  final DateTime _endDate = DateTime.now().add(new Duration(days: 30 * 18));
+  final firstKey = new GlobalKey();
+  double firstCardHeight;
+  ScrollController scrollController = new ScrollController();
 
   final List<HolidayService> _holidayServices = [
     new UsaHolidayService(),
@@ -181,6 +185,12 @@ class _NlwHomePageState extends State<NlwHomePage> {
     );
   }
 
+  void onCountrySelectionChange(String country) {
+    _selectedCountry = country;
+    loadHolidayInfo();
+    prefs.setString(COUNTRY_KEY, country);
+  }
+
   Widget _getDropDownWidget() {
     return new Row(children: <Widget>[
       new Expanded(
@@ -194,9 +204,7 @@ class _NlwHomePageState extends State<NlwHomePage> {
           items: dropdownMenuOptions,
           onChanged: (s) {
             setState(() {
-              _selectedCountry = s;
-              loadHolidayInfo();
-              prefs.setString(COUNTRY_KEY, s);
+              onCountrySelectionChange(s);
             });
           },
         )),
@@ -207,42 +215,18 @@ class _NlwHomePageState extends State<NlwHomePage> {
   Widget _getHolidayListView() {
     return new Expanded(
         child: new ListView.builder(
+            controller: scrollController,
             padding: _padding,
             itemCount: holidayDetailsMap[_selectedCountry].length,
             itemBuilder: (context, index) {
+              Widget cardWidget = getCard(
+                  holidayDetailsMap[_selectedCountry].elementAt(index),
+                  index == 0 ? firstKey : null);
+
               return new Stack(
                 alignment: Alignment.topRight,
                 children: <Widget>[
-                  new Card(
-                    child: new Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        new Row(
-                          mainAxisSize: MainAxisSize.max,
-                          children: <Widget>[
-                            getDateInfoBlock(holidayDetailsMap[_selectedCountry]
-                                .elementAt(index)),
-                            getHolidayDetailsTile(
-                                holidayDetailsMap[_selectedCountry]
-                                    .elementAt(index)),
-                          ],
-                        ),
-                        new Divider(),
-                        new Row(
-                          children: <Widget>[
-                            new Container(
-                              padding: _padding,
-                              child: getDaysToGo(
-                                  holidayDetailsMap[_selectedCountry]
-                                      .elementAt(index)),
-                            ),
-                            getButtonBar(holidayDetailsMap[_selectedCountry]
-                                .elementAt(index))
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
+                  cardWidget,
                   getWeekdayLabel(
                       holidayDetailsMap[_selectedCountry].elementAt(index))
                 ],
@@ -250,19 +234,60 @@ class _NlwHomePageState extends State<NlwHomePage> {
             }));
   }
 
+  Widget getCard(HolidayDetails details, Key key) {
+    return new Card(
+      key: key,
+      child: new Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          new Row(
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              getDateInfoBlock(details),
+              getHolidayDetailsTile(details),
+            ],
+          ),
+          new Divider(),
+          new Row(
+            children: <Widget>[
+              new Container(
+                padding: _padding,
+                child: getDaysToGo(details),
+              ),
+              getButtonBar(details)
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
   _launchURL(String url) async {
     if (await canLaunch(url)) {
-      await launch(url);
+      await launch(url,forceWebView: true);
     } else {
       throw 'Could not launch $url';
     }
   }
 
+  void scrollToNextHoliday() {
+    if (firstCardHeight == null && firstKey.currentContext != null) {
+      firstCardHeight = firstKey.currentContext.size.height;
+    }
+    if (firstCardHeight != null && firstCardHeight > 0.0) {
+      int requiredIndex = holidayDetailsMap[_selectedCountry].indexOf(
+              holidayDetailsMap[_selectedCountry]
+                  .firstWhere((holidayInfo) => !holidayInfo.isPast)) -
+          1;
+      scrollController.animateTo(firstCardHeight * requiredIndex,
+          duration: new Duration(seconds: 2), curve: Curves.easeInOut);
+    }
+  }
+
   void loadHolidayInfo() {
     if (holidayDetailsMap[_selectedCountry].isEmpty) {
-      print("Loaing for first time");
-      holidayDetailsMap[_selectedCountry]
-          .addAll(_serviceMap[_selectedCountry].getHolidays(_startDate,_endDate));
+      holidayDetailsMap[_selectedCountry].addAll(
+          _serviceMap[_selectedCountry].getHolidays(_startDate, _endDate));
     }
     print(holidayDetailsMap[_selectedCountry]);
   }
@@ -281,8 +306,7 @@ class _NlwHomePageState extends State<NlwHomePage> {
       return getDefaultSelectedCountry();
     }).then((selection) {
       setState(() {
-        _selectedCountry = selection;
-        loadHolidayInfo();
+        onCountrySelectionChange(selection);
         dropdownMenuOptions = _countryList
             .map((String item) => new DropdownMenuItem<String>(
                 value: item, child: new Text(item)))
@@ -296,6 +320,8 @@ class _NlwHomePageState extends State<NlwHomePage> {
     if (_selectedCountry == null) {
       return new Container();
     }
+
+    WidgetsBinding.instance.scheduleFrameCallback((_) => scrollToNextHoliday());
 
     return new Scaffold(
       appBar: new AppBar(
