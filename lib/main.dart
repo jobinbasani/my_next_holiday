@@ -270,7 +270,9 @@ class _NlwHomePageState extends State<NlwHomePage> {
     }
   }
 
-  void scrollToNextHoliday() {
+  void scrollToNextHoliday(MediaQueryData mediaQueryData) {
+    var cardSize =
+        mediaQueryData.orientation == Orientation.portrait ? .30 : .75;
     if (firstCardHeight == null && firstKey.currentContext != null) {
       firstCardHeight = firstKey.currentContext.size.height;
     }
@@ -280,7 +282,7 @@ class _NlwHomePageState extends State<NlwHomePage> {
                   .firstWhere((holidayInfo) => !holidayInfo.isPast)) -
           1;
       scrollController.animateTo(
-          (firstCardHeight * requiredIndex) + (firstCardHeight * .30),
+          (firstCardHeight * requiredIndex) + (firstCardHeight * cardSize),
           duration: new Duration(seconds: 2),
           curve: Curves.easeInOut);
     }
@@ -323,7 +325,8 @@ class _NlwHomePageState extends State<NlwHomePage> {
       return new Container();
     }
 
-    WidgetsBinding.instance.scheduleFrameCallback((_) => scrollToNextHoliday());
+    WidgetsBinding.instance.scheduleFrameCallback(
+        (_) => scrollToNextHoliday(MediaQuery.of(context)));
 
     return new Scaffold(
       appBar: new AppBar(
