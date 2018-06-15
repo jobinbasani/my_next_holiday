@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:my_next_holiday/services/HolidayService.dart';
 import 'package:my_next_holiday/services/CanadaHolidayService.dart';
@@ -55,13 +56,31 @@ class _NlwHomePageState extends State<NlwHomePage> {
       DateTime.now().subtract(new Duration(days: 30 * 6));
   final DateTime _endDate = DateTime.now().add(new Duration(days: 30 * 18));
   final firstKey = new GlobalKey();
+  final nlwKey = new GlobalKey();
   double firstCardHeight;
   ScrollController scrollController = new ScrollController();
+  bool _isNextHolidayVisible = true;
+  bool _isScrollTriggered = false;
+  bool _isScrollUp = true;
+  double _nlwPosition = 0.0;
 
   final List<HolidayService> _holidayServices = [
     new UsaHolidayService(),
     new CanadaHolidayService()
   ];
+
+  Widget getFab() {
+    return new Opacity(
+      opacity: _isNextHolidayVisible ? 0.0 : 1.0,
+      child: new FloatingActionButton(
+        onPressed: () {
+          scrollToPosition(firstCardHeight * getNextHolidayIndex());
+        },
+        child:
+            new Icon(_isScrollUp ? Icons.arrow_upward : Icons.arrow_downward),
+      ),
+    );
+  }
 
   Widget getDaysToGo(HolidayDetails details) {
     String data = "${details.daysDiff} ${Intl.plural(
@@ -144,6 +163,17 @@ class _NlwHomePageState extends State<NlwHomePage> {
         "\nRead more at ${details.url}");
   }
 
+  void onListScroll() {
+    setState(() {
+      _isScrollTriggered = true;
+      _isNextHolidayVisible = nlwKey.currentWidget != null;
+      if (_isNextHolidayVisible) {
+        _nlwPosition = scrollController.position.pixels;
+      }
+      _isScrollUp = scrollController.position.pixels > _nlwPosition;
+    });
+  }
+
   Widget getButtonBar(HolidayDetails details) {
     List<Widget> buttons = [];
     buttons.add(new FlatButton(
@@ -189,6 +219,7 @@ class _NlwHomePageState extends State<NlwHomePage> {
     _selectedCountry = country;
     loadHolidayInfo();
     prefs.setString(COUNTRY_KEY, country);
+    _isScrollTriggered = false;
   }
 
   Widget _getDropDownWidget() {
@@ -212,6 +243,12 @@ class _NlwHomePageState extends State<NlwHomePage> {
     ]);
   }
 
+  int getNextHolidayIndex() {
+    return holidayDetailsMap[_selectedCountry].indexOf(
+        holidayDetailsMap[_selectedCountry]
+            .firstWhere((holidayInfo) => !holidayInfo.isPast));
+  }
+
   Widget _getHolidayListView() {
     return new Expanded(
         child: new ListView.builder(
@@ -219,9 +256,14 @@ class _NlwHomePageState extends State<NlwHomePage> {
             padding: _padding,
             itemCount: holidayDetailsMap[_selectedCountry].length,
             itemBuilder: (context, index) {
+              var key;
+              if (index == 0) {
+                key = firstKey;
+              } else if (index == getNextHolidayIndex()) {
+                key = nlwKey;
+              }
               Widget cardWidget = getCard(
-                  holidayDetailsMap[_selectedCountry].elementAt(index),
-                  index == 0 ? firstKey : null);
+                  holidayDetailsMap[_selectedCountry].elementAt(index), key);
 
               return new Stack(
                 alignment: Alignment.topRight,
@@ -277,15 +319,16 @@ class _NlwHomePageState extends State<NlwHomePage> {
       firstCardHeight = firstKey.currentContext.size.height;
     }
     if (firstCardHeight != null && firstCardHeight > 0.0) {
-      int requiredIndex = holidayDetailsMap[_selectedCountry].indexOf(
-              holidayDetailsMap[_selectedCountry]
-                  .firstWhere((holidayInfo) => !holidayInfo.isPast)) -
-          1;
-      scrollController.animateTo(
-          (firstCardHeight * requiredIndex) + (firstCardHeight * cardSize),
-          duration: new Duration(seconds: 2),
-          curve: Curves.easeInOut);
+      int requiredIndex = getNextHolidayIndex() - 1;
+      scrollToPosition(
+          (firstCardHeight * requiredIndex) + (firstCardHeight * cardSize));
+      _nlwPosition = 0.0;
     }
+  }
+
+  void scrollToPosition(double offset) {
+    scrollController.animateTo(offset,
+        duration: new Duration(seconds: 2), curve: Curves.easeInOut);
   }
 
   void loadHolidayInfo() {
@@ -317,6 +360,7 @@ class _NlwHomePageState extends State<NlwHomePage> {
             .toList();
       });
     });
+    scrollController.addListener(onListScroll);
   }
 
   @override
@@ -325,8 +369,10 @@ class _NlwHomePageState extends State<NlwHomePage> {
       return new Container();
     }
 
-    WidgetsBinding.instance.scheduleFrameCallback(
-        (_) => scrollToNextHoliday(MediaQuery.of(context)));
+    if (!_isScrollTriggered) {
+      WidgetsBinding.instance.scheduleFrameCallback(
+          (_) => scrollToNextHoliday(MediaQuery.of(context)));
+    }
 
     return new Scaffold(
       appBar: new AppBar(
@@ -341,6 +387,13 @@ class _NlwHomePageState extends State<NlwHomePage> {
           ],
         ),
       ),
+      floatingActionButton: getFab(),
     );
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
   }
 }
