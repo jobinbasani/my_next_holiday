@@ -23,7 +23,7 @@ class HolidayDetails extends HolidayInfo {
       "Good Friday",
       "Good Friday is a religious holiday, observed primarily by Christians, commemorating the crucifixion of Jesus Christ and his death at Calvary.",
       "http://en.wikipedia.org/wiki/Good_Friday");
-  static final HolidayInfo easterMonday = new HolidayInfo(
+  static final HolidayInfo easterMondayCanada = new HolidayInfo(
       "Easter Monday",
       "Easter Monday is the day after Easter Sunday and is celebrated as a holiday in some largely Christian cultures, especially Catholic and Eastern Christian cultures. Observed in Quebec.",
       "http://en.wikipedia.org/wiki/Easter_Monday");
@@ -99,6 +99,18 @@ class HolidayDetails extends HolidayInfo {
       "Canberra Day",
       "A public holiday held annually on the second Monday in March in the Australian Capital Territory (ACT) to celebrate the official naming of Canberra. Observed in Australian Capital Territory.",
       "https://en.wikipedia.org/wiki/Canberra_Day");
+  static final HolidayInfo easterSaturday = new HolidayInfo(
+      "Easter Saturday",
+      "Easter Saturday, or Bright Saturday, on the Christian calendar is the Saturday following the festival of Easter, the Saturday of Easter or Bright Week.",
+      "https://en.wikipedia.org/wiki/Easter_Saturday");
+  static final HolidayInfo easterMondayAus = new HolidayInfo(
+      "Easter Monday",
+      "Easter Monday in the Roman Catholic liturgical calendar is the second day of the octave of Easter Week and analogously in the Eastern Orthodox Church is the second day of Bright Week.",
+      "https://en.wikipedia.org/wiki/Easter_Monday");
+  static final HolidayInfo anzacDay = new HolidayInfo(
+      "ANZAC Day",
+      "A national day of remembrance in Australia and New Zealand that broadly commemorates all Australians and New Zealanders \"who served and died in all wars, conflicts, and peacekeeping operations\" and \"the contribution and suffering of all those who have served.\"",
+      "https://en.wikipedia.org/wiki/Anzac_Day");
 
   DateTime holidayDate;
   bool isNextHoliday;

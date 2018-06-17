@@ -61,6 +61,11 @@ class CanadaHolidayService extends CommonHolidayService {
         getFirstDayOfWeek(DateTime.september, DateTime.monday, year)));
   }
 
+  void addEasterMonday(List<HolidayDetails> holidays, int year) {
+    holidays.add(new HolidayDetails(HolidayDetails.easterMondayCanada,
+        getEasterDay(year).add(new Duration(days: 1))));
+  }
+
   void addThanksGivingDay(List<HolidayDetails> holidays, int year) {
     holidays.add(new HolidayDetails(
         HolidayDetails.canadaThanksGivingDay,

@@ -12,6 +12,10 @@ class AustraliaHolidayService extends CommonHolidayService {
     addNewYear(holidays, year);
     addAustraliaDay(holidays, year);
     addCanberraDay(holidays, year);
+    addGoodFriday(holidays, year);
+    addEasterSaturday(holidays, year);
+    addEasterMonday(holidays, year);
+    addAnzacDay(holidays, year);
     addChristmasDay(holidays, year);
   }
 
@@ -25,5 +29,20 @@ class AustraliaHolidayService extends CommonHolidayService {
         HolidayDetails.canberraDay,
         getFirstDayOfWeek(DateTime.march, DateTime.monday, year)
             .add(new Duration(days: 7))));
+  }
+
+  void addEasterSaturday(List<HolidayDetails> holidays, int year) {
+    holidays.add(new HolidayDetails(HolidayDetails.easterSaturday,
+        getEasterDay(year).subtract(new Duration(days: 1))));
+  }
+
+  void addEasterMonday(List<HolidayDetails> holidays, int year) {
+    holidays.add(new HolidayDetails(HolidayDetails.easterMondayAus,
+        getEasterDay(year).add(new Duration(days: 1))));
+  }
+
+  void addAnzacDay(List<HolidayDetails> holidays, int year) {
+    holidays.add(new HolidayDetails(
+        HolidayDetails.anzacDay, new DateTime.utc(year, DateTime.april, 25)));
   }
 }

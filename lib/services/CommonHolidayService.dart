@@ -35,11 +35,6 @@ abstract class CommonHolidayService implements HolidayService {
         getEasterDay(year).subtract(new Duration(days: 2))));
   }
 
-  void addEasterMonday(List<HolidayDetails> holidays, int year) {
-    holidays.add(new HolidayDetails(HolidayDetails.easterMonday,
-        getEasterDay(year).add(new Duration(days: 1))));
-  }
-
   void addChristmasDay(List<HolidayDetails> holidays, int year) {
     holidays.add(new HolidayDetails(HolidayDetails.christmasDay,
         new DateTime.utc(year, DateTime.december, 25)));
