@@ -42,11 +42,11 @@ abstract class CommonHolidayService implements HolidayService {
 
   void addChristmasDay(List<HolidayDetails> holidays, int year) {
     holidays.add(new HolidayDetails(HolidayDetails.christmasDay,
-        new DateTime(year, DateTime.december, 25)));
+        new DateTime.utc(year, DateTime.december, 25)));
   }
 
   DateTime getFirstDayOfWeek(int month, int week, int year) {
-    DateTime calculatedDay = new DateTime(year, month, 1);
+    DateTime calculatedDay = new DateTime.utc(year, month, 1);
     while (calculatedDay.weekday != week) {
       calculatedDay = calculatedDay.add(new Duration(days: 1));
     }
@@ -63,8 +63,8 @@ abstract class CommonHolidayService implements HolidayService {
 
   DateTime getLastDayOfMonth(int month, int year) {
     return (month < 12)
-        ? new DateTime(year, month + 1, 0)
-        : new DateTime(year + 1, 1, 0);
+        ? new DateTime.utc(year, month + 1, 0)
+        : new DateTime.utc(year + 1, 1, 0);
   }
 
   DateTime getEasterDay(int year) {
@@ -83,6 +83,6 @@ abstract class CommonHolidayService implements HolidayService {
     int n = ((h + l - 7 * m + 114) ~/ 31);
     int p = (h + l - 7 * m + 114) % 31;
 
-    return new DateTime(year, n, p + 1);
+    return new DateTime.utc(year, n, p + 1);
   }
 }

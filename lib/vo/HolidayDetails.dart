@@ -71,6 +71,26 @@ class HolidayDetails extends HolidayInfo {
       "Boxing Day",
       "The first or second weekday after Christmas Day.Observed in Ontario",
       "http://en.wikipedia.org/wiki/Boxing_Day");
+  static final HolidayInfo independenceDayUsa = new HolidayInfo(
+      "Independence Day",
+      "Commemorating the adoption of the Declaration of Independence on July 4, 1776, declaring independence from the Kingdom of Great Britain.",
+      "http://en.wikipedia.org/wiki/Independence_Day_(United_States)");
+  static final HolidayInfo laborDayUsa = new HolidayInfo(
+      "Labor Day",
+      "A celebration of the American labor movement and is dedicated to the social and economic achievements of workers.",
+      "https://en.wikipedia.org/wiki/Labor_Day");
+  static final HolidayInfo colombusDay = new HolidayInfo(
+      "Columbus Day",
+      "The anniversary of Christopher Columbus' arrival in the Americas, which happened on October 12, 1492.",
+      "http://en.wikipedia.org/wiki/Columbus_Day");
+  static final HolidayInfo veteransDay = new HolidayInfo(
+      "Veterans Day",
+      "Honors people who have served in the U.S. Armed Forces, also known as veterans.",
+      "http://en.wikipedia.org/wiki/Veterans_Day");
+  static final HolidayInfo thanksGivingUsa = new HolidayInfo(
+      "Thanksgiving Day",
+      "A day of giving thanks for the blessing of the harvest and of the preceding year.",
+      "http://en.wikipedia.org/wiki/Thanksgiving");
 
   DateTime holidayDate;
   bool isNextHoliday;
