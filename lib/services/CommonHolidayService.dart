@@ -40,6 +40,11 @@ abstract class CommonHolidayService implements HolidayService {
         new DateTime.utc(year, DateTime.december, 25)));
   }
 
+  void addBoxingDay(List<HolidayDetails> holidays, int year) {
+    holidays.add(new HolidayDetails(HolidayDetails.boxingDay,
+        new DateTime.utc(year, DateTime.december, 26)));
+  }
+
   DateTime getFirstDayOfWeek(int month, int week, int year) {
     DateTime calculatedDay = new DateTime.utc(year, month, 1);
     while (calculatedDay.weekday != week) {

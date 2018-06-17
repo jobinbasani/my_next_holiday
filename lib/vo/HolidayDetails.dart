@@ -67,6 +67,10 @@ class HolidayDetails extends HolidayInfo {
       "Christmas Day",
       "Annual commemoration of the birth of Jesus Christ.",
       "http://en.wikipedia.org/wiki/Christmas");
+  static final HolidayInfo boxingDay = new HolidayInfo(
+      "Boxing Day",
+      "Boxing Day is a holiday traditionally celebrated the day following Christmas Day.",
+      "http://en.wikipedia.org/wiki/Boxing_Day");
   static final HolidayInfo boxingDayCanada = new HolidayInfo(
       "Boxing Day",
       "The first or second weekday after Christmas Day.Observed in Ontario",
@@ -111,6 +115,14 @@ class HolidayDetails extends HolidayInfo {
       "ANZAC Day",
       "A national day of remembrance in Australia and New Zealand that broadly commemorates all Australians and New Zealanders \"who served and died in all wars, conflicts, and peacekeeping operations\" and \"the contribution and suffering of all those who have served.\"",
       "https://en.wikipedia.org/wiki/Anzac_Day");
+  static final HolidayInfo queensBirthday = new HolidayInfo(
+      "Queens Birthday",
+      "The selected day on which the birthday of the monarch of the Commonwealth realms (currently Queen Elizabeth II) is officially celebrated.",
+      "https://en.wikipedia.org/wiki/Queen's_Official_Birthday");
+  static final HolidayInfo labourDayAus = new HolidayInfo(
+      "Labour Day",
+      "Annual holiday to celebrate the achievements of workers. Observed in Australian Capital Territory, New South Wales and South Australia.",
+      "https://en.wikipedia.org/wiki/Labour_Day");
 
   DateTime holidayDate;
   bool isNextHoliday;

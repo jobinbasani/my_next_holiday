@@ -16,7 +16,10 @@ class AustraliaHolidayService extends CommonHolidayService {
     addEasterSaturday(holidays, year);
     addEasterMonday(holidays, year);
     addAnzacDay(holidays, year);
+    addQueensBirthday(holidays, year);
+    addLabourDay(holidays, year);
     addChristmasDay(holidays, year);
+    addBoxingDay(holidays, year);
   }
 
   void addAustraliaDay(List<HolidayDetails> holidays, int year) {
@@ -44,5 +47,19 @@ class AustraliaHolidayService extends CommonHolidayService {
   void addAnzacDay(List<HolidayDetails> holidays, int year) {
     holidays.add(new HolidayDetails(
         HolidayDetails.anzacDay, new DateTime.utc(year, DateTime.april, 25)));
+  }
+
+  void addQueensBirthday(List<HolidayDetails> holidays, int year) {
+    holidays.add(new HolidayDetails(
+        HolidayDetails.queensBirthday,
+        getFirstDayOfWeek(DateTime.june, DateTime.monday, year)
+            .add(new Duration(days: 7))));
+  }
+
+  void addLabourDay(List<HolidayDetails> holidays, int year) {
+    holidays.add(new HolidayDetails(
+        HolidayDetails.labourDayAus,
+        getFirstDayOfWeek(DateTime.october, DateTime.monday, year)
+            ));
   }
 }
