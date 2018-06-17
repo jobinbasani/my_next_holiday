@@ -4,6 +4,7 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:my_next_holiday/services/AustraliaHolidayService.dart';
 import 'package:my_next_holiday/services/HolidayService.dart';
 import 'package:my_next_holiday/services/CanadaHolidayService.dart';
 import 'package:my_next_holiday/services/UsaHolidayService.dart';
@@ -66,7 +67,8 @@ class _NlwHomePageState extends State<NlwHomePage> {
 
   final List<HolidayService> _holidayServices = [
     new UsaHolidayService(),
-    new CanadaHolidayService()
+    new CanadaHolidayService(),
+    new AustraliaHolidayService()
   ];
 
   Widget getFab() {

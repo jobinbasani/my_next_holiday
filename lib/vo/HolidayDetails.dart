@@ -91,6 +91,14 @@ class HolidayDetails extends HolidayInfo {
       "Thanksgiving Day",
       "A day of giving thanks for the blessing of the harvest and of the preceding year.",
       "http://en.wikipedia.org/wiki/Thanksgiving");
+  static final HolidayInfo australiaDay = new HolidayInfo(
+      "Australia Day",
+      "The official national day of Australia, celebrated annually on 26 January, which marks the anniversary of the 1788 arrival of the First Fleet of British Ships at Sydney Cove, New South Wales, and raising of the Flag of Great Britain at that site by Governor Arthur Phillip.",
+      "https://en.wikipedia.org/wiki/Australia_Day");
+  static final HolidayInfo canberraDay = new HolidayInfo(
+      "Canberra Day",
+      "A public holiday held annually on the second Monday in March in the Australian Capital Territory (ACT) to celebrate the official naming of Canberra. Observed in Australian Capital Territory.",
+      "https://en.wikipedia.org/wiki/Canberra_Day");
 
   DateTime holidayDate;
   bool isNextHoliday;
