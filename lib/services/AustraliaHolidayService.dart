@@ -1,7 +1,7 @@
-import 'package:my_next_holiday/services/CommonHolidayService.dart';
+import 'package:my_next_holiday/services/HolidayService.dart';
 import 'package:my_next_holiday/vo/HolidayDetails.dart';
 
-class AustraliaHolidayService extends CommonHolidayService {
+class AustraliaHolidayService extends HolidayService {
   @override
   String getCountry() {
     return "Australia";
@@ -57,9 +57,7 @@ class AustraliaHolidayService extends CommonHolidayService {
   }
 
   void addLabourDay(List<HolidayDetails> holidays, int year) {
-    holidays.add(new HolidayDetails(
-        HolidayDetails.labourDayAus,
-        getFirstDayOfWeek(DateTime.october, DateTime.monday, year)
-            ));
+    holidays.add(new HolidayDetails(HolidayDetails.labourDayAus,
+        getFirstDayOfWeek(DateTime.october, DateTime.monday, year)));
   }
 }

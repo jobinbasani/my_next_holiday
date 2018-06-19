@@ -1,7 +1,7 @@
-import 'package:my_next_holiday/services/CommonHolidayService.dart';
+import 'package:my_next_holiday/services/HolidayService.dart';
 import 'package:my_next_holiday/vo/HolidayDetails.dart';
 
-class CanadaHolidayService extends CommonHolidayService {
+class CanadaHolidayService extends HolidayService {
   @override
   String getCountry() {
     return "Canada";
