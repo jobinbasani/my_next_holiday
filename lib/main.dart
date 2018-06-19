@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:my_next_holiday/services/AustraliaHolidayService.dart';
 import 'package:my_next_holiday/services/HolidayService.dart';
 import 'package:my_next_holiday/services/CanadaHolidayService.dart';
+import 'package:my_next_holiday/services/UkHolidayService.dart';
 import 'package:my_next_holiday/services/UsaHolidayService.dart';
 import 'package:my_next_holiday/vo/HolidayDetails.dart';
 import 'package:intl/intl.dart';
@@ -68,7 +69,8 @@ class _NlwHomePageState extends State<NlwHomePage> {
   final List<HolidayService> _holidayServices = [
     new UsaHolidayService(),
     new CanadaHolidayService(),
-    new AustraliaHolidayService()
+    new AustraliaHolidayService(),
+    new UkHolidayService()
   ];
 
   Widget getFab() {
@@ -338,7 +340,6 @@ class _NlwHomePageState extends State<NlwHomePage> {
       holidayDetailsMap[_selectedCountry].addAll(
           _serviceMap[_selectedCountry].getHolidays(_startDate, _endDate));
     }
-    print(holidayDetailsMap[_selectedCountry]);
   }
 
   @override

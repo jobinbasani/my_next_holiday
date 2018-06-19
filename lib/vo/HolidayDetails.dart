@@ -123,6 +123,10 @@ class HolidayDetails extends HolidayInfo {
       "Labour Day",
       "Annual holiday to celebrate the achievements of workers. Observed in Australian Capital Territory, New South Wales and South Australia.",
       "https://en.wikipedia.org/wiki/Labour_Day");
+  static final HolidayInfo easterMondayUk = new HolidayInfo(
+      "Easter Monday",
+      "Easter Monday in the Roman Catholic liturgical calendar is the second day of the octave of Easter Week and analogously in the Eastern Orthodox Church is the second day of Bright Week. Observed in England, Northern Ireland and Wales.",
+      "https://en.wikipedia.org/wiki/Easter_Monday");
 
   DateTime holidayDate;
   bool isNextHoliday;

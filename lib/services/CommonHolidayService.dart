@@ -8,7 +8,6 @@ abstract class CommonHolidayService implements HolidayService {
     int startYear = startDate.year;
     int endYear = endDate.year;
     for (int year = startYear; year <= endYear; year++) {
-      print(year);
       loadHolidays(holidayList, year);
     }
     if (holidayList.isNotEmpty) {
