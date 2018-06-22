@@ -134,7 +134,23 @@ class HolidayDetails extends HolidayInfo {
   static final HolidayInfo springBankHoliday = new HolidayInfo(
       "Spring Bank Holiday",
       "Last Monday in May",
-      "http://en.wikipedia.org/wiki/Bank_holida");
+      "http://en.wikipedia.org/wiki/Bank_holiday");
+  static final HolidayInfo firstSummerBankHoliday = new HolidayInfo(
+      "Summer Bank Holiday",
+      "First Monday in August. Observed in Scotland.",
+      "http://en.wikipedia.org/wiki/Bank_holiday");
+  static final HolidayInfo lastSummerBankHoliday = new HolidayInfo(
+      "Summer Bank Holiday",
+      "Last Monday in August. Observed in England, Northern Ireland and Wales.",
+      "http://en.wikipedia.org/wiki/Bank_holiday");
+  static final HolidayInfo halloween = new HolidayInfo(
+      "Halloween",
+      "A yearly celebration on 31 October, the eve of the Western Christian feast of All Hallows' Day",
+      "http://en.wikipedia.org/wiki/Halloween");
+  static final HolidayInfo guyFawkesDay = new HolidayInfo(
+      "Guy Fawkes Day",
+      "Guy Fawkes Day, also known as Guy Fawkes Night, Bonfire Night and Firework Night, is an annual commemoration observed on 5 November.",
+      "http://en.wikipedia.org/wiki/Guy_Fawkes_Night");
 
   DateTime holidayDate;
   bool isNextHoliday;
