@@ -12,6 +12,8 @@ class UkHolidayService extends HolidayService {
     addNewYear(holidays, year);
     addGoodFriday(holidays, year);
     addEasterMonday(holidays, year);
+    addMayDay(holidays, year);
+    addSpringBankHoliday(holidays, year);
     addChristmasDay(holidays, year);
   }
 
@@ -19,6 +21,18 @@ class UkHolidayService extends HolidayService {
     holidays.add(new HolidayDetails(
         HolidayDetails.easterMondayUk,
         getEasterDay(year).add(new Duration(days: 1))));
+  }
+
+  void addMayDay(List<HolidayDetails> holidays, int year) {
+    holidays.add(new HolidayDetails(
+        HolidayDetails.mayDay,
+        getFirstDayOfWeek(DateTime.may, DateTime.monday, year)));
+  }
+
+  void addSpringBankHoliday(List<HolidayDetails> holidays, int year) {
+    holidays.add(new HolidayDetails(
+        HolidayDetails.springBankHoliday,
+        getLastDayOfWeek(DateTime.may, DateTime.monday, year)));
   }
 
 }

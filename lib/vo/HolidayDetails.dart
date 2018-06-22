@@ -127,6 +127,14 @@ class HolidayDetails extends HolidayInfo {
       "Easter Monday",
       "Easter Monday in the Roman Catholic liturgical calendar is the second day of the octave of Easter Week and analogously in the Eastern Orthodox Church is the second day of Bright Week. Observed in England, Northern Ireland and Wales.",
       "https://en.wikipedia.org/wiki/Easter_Monday");
+  static final HolidayInfo mayDay = new HolidayInfo(
+      "May Day Holiday",
+      "A traditional spring holiday and coincides with International Workers' Day",
+      "http://en.wikipedia.org/wiki/May_Day");
+  static final HolidayInfo springBankHoliday = new HolidayInfo(
+      "Spring Bank Holiday",
+      "Last Monday in May",
+      "http://en.wikipedia.org/wiki/Bank_holida");
 
   DateTime holidayDate;
   bool isNextHoliday;
