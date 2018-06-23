@@ -316,16 +316,12 @@ class _NlwHomePageState extends State<NlwHomePage> {
     }
   }
 
-  void scrollToNextHoliday(MediaQueryData mediaQueryData) {
-    var cardSize =
-        mediaQueryData.orientation == Orientation.portrait ? .30 : .75;
+  void scrollToNextHoliday() {
     if (firstCardHeight == null && firstKey.currentContext != null) {
       firstCardHeight = firstKey.currentContext.size.height;
     }
     if (firstCardHeight != null && firstCardHeight > 0.0) {
-      int requiredIndex = getNextHolidayIndex() - 1;
-      scrollToPosition(
-          (firstCardHeight * requiredIndex) + (firstCardHeight * cardSize));
+      scrollToPosition(firstCardHeight * getNextHolidayIndex());
       _nlwPosition = 0.0;
     }
   }
@@ -374,7 +370,7 @@ class _NlwHomePageState extends State<NlwHomePage> {
 
     if (!_isScrollTriggered) {
       WidgetsBinding.instance.scheduleFrameCallback(
-          (_) => scrollToNextHoliday(MediaQuery.of(context)));
+          (_) => scrollToNextHoliday());
     }
 
     return new Scaffold(
