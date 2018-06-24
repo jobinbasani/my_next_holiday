@@ -56,4 +56,9 @@ class UkHolidayService extends HolidayService {
     holidays.add(new HolidayDetails(
         HolidayDetails.guyFawkesDay, new DateTime(year, DateTime.november, 5)));
   }
+
+  @override
+  String getCountryCode() {
+    return "GB";
+  }
 }

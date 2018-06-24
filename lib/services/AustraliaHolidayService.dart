@@ -60,4 +60,9 @@ class AustraliaHolidayService extends HolidayService {
     holidays.add(new HolidayDetails(HolidayDetails.labourDayAus,
         getFirstDayOfWeek(DateTime.october, DateTime.monday, year)));
   }
+
+  @override
+  String getCountryCode() {
+    return "AU";
+  }
 }

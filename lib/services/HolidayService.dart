@@ -2,6 +2,7 @@ import 'package:my_next_holiday/vo/HolidayDetails.dart';
 
 abstract class HolidayService {
   String getCountry();
+  String getCountryCode();
 
   void loadHolidays(List<HolidayDetails> holidays, int year);
 

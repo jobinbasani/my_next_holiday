@@ -65,6 +65,7 @@ class _NlwHomePageState extends State<NlwHomePage> {
   bool _isScrollTriggered = false;
   bool _isScrollUp = true;
   double _nlwPosition = 0.0;
+  final String defaultCountryCode = "US";
 
   final List<HolidayService> _holidayServices = [
     new UsaHolidayService(),
@@ -94,7 +95,11 @@ class _NlwHomePageState extends State<NlwHomePage> {
   }
 
   Future<String> getDefaultSelectedCountry() async {
-    String country = prefs.getString(COUNTRY_KEY) ?? _countryList.first;
+    String country = prefs.getString(COUNTRY_KEY) ??
+        _holidayServices
+            .firstWhere((holidayService) =>
+                holidayService.getCountryCode() == defaultCountryCode)
+            .getCountry();
     return _countryList.contains(country) ? country : _countryList.first;
   }
 
@@ -369,8 +374,8 @@ class _NlwHomePageState extends State<NlwHomePage> {
     }
 
     if (!_isScrollTriggered) {
-      WidgetsBinding.instance.scheduleFrameCallback(
-          (_) => scrollToNextHoliday());
+      WidgetsBinding.instance
+          .scheduleFrameCallback((_) => scrollToNextHoliday());
     }
 
     return new Scaffold(

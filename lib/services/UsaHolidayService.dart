@@ -68,4 +68,9 @@ class UsaHolidayService extends HolidayService {
         getFirstDayOfWeek(DateTime.november, DateTime.thursday, year)
             .add(new Duration(days: 21))));
   }
+
+  @override
+  String getCountryCode() {
+    return "US";
+  }
 }

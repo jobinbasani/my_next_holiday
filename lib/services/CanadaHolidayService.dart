@@ -82,4 +82,9 @@ class CanadaHolidayService extends HolidayService {
     holidays.add(new HolidayDetails(HolidayDetails.boxingDayCanada,
         new DateTime(year, DateTime.december, 26)));
   }
+
+  @override
+  String getCountryCode() {
+    return "CA";
+  }
 }
