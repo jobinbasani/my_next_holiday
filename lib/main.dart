@@ -59,6 +59,7 @@ class _NlwHomePageState extends State<NlwHomePage> {
   final DateTime _endDate = DateTime.now().add(new Duration(days: 30 * 18));
   final firstKey = new GlobalKey();
   final nlwKey = new GlobalKey();
+  final centerColumnKey = new GlobalKey();
   double firstCardHeight;
   ScrollController scrollController = new ScrollController();
   bool _isNextHolidayVisible = true;
@@ -329,6 +330,7 @@ class _NlwHomePageState extends State<NlwHomePage> {
       scrollToPosition(firstCardHeight * getNextHolidayIndex());
       _nlwPosition = 0.0;
     }
+    handleTip();
   }
 
   void scrollToPosition(double offset) {
@@ -367,6 +369,25 @@ class _NlwHomePageState extends State<NlwHomePage> {
     scrollController.addListener(onListScroll);
   }
 
+  void handleTip() {
+    if (prefs != null &&
+        (prefs.getBool("hintShown") == null || !prefs.getBool("hintShown"))) {
+      Scaffold.of(centerColumnKey.currentContext).showSnackBar(new SnackBar(
+            duration: new Duration(seconds: 30),
+            content: new Text("Switch country using the top dropdown!"),
+            action: SnackBarAction(
+              label: 'OK',
+              onPressed: () {
+                Scaffold
+                    .of(centerColumnKey.currentContext)
+                    .hideCurrentSnackBar(reason: SnackBarClosedReason.hide);
+              },
+            ),
+          ));
+      prefs.setBool("hintShown", true);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_selectedCountry == null) {
@@ -382,15 +403,18 @@ class _NlwHomePageState extends State<NlwHomePage> {
       appBar: new AppBar(
         title: new Text(widget.title),
       ),
-      body: new Center(
-        child: new Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            _getDropDownWidget(),
-            _getHolidayListView(),
-          ],
-        ),
-      ),
+      body: new Builder(builder: (BuildContext context) {
+        return new Center(
+          key: centerColumnKey,
+          child: new Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              _getDropDownWidget(),
+              _getHolidayListView(),
+            ],
+          ),
+        );
+      }),
       floatingActionButton: getFab(),
     );
   }
