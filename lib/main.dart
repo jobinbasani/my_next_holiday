@@ -14,6 +14,7 @@ import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:share/share.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 import 'dart:io' show Platform;
 
 void main() => runApp(new NlwApp());
@@ -61,7 +62,7 @@ class _NlwHomePageState extends State<NlwHomePage> {
   final nlwKey = new GlobalKey();
   final centerColumnKey = new GlobalKey();
   double firstCardHeight;
-  ScrollController scrollController = new ScrollController();
+  AutoScrollController scrollController = new AutoScrollController();
   bool _isNextHolidayVisible = true;
   bool _isScrollTriggered = false;
   bool _isScrollUp = true;
@@ -80,7 +81,7 @@ class _NlwHomePageState extends State<NlwHomePage> {
       opacity: _isNextHolidayVisible ? 0.0 : 1.0,
       child: new FloatingActionButton(
         onPressed: () {
-          scrollToPosition(firstCardHeight * getNextHolidayIndex());
+          scrollToNextHoliday();
         },
         child:
             new Icon(_isScrollUp ? Icons.arrow_upward : Icons.arrow_downward),
@@ -89,8 +90,8 @@ class _NlwHomePageState extends State<NlwHomePage> {
   }
 
   Widget getDaysToGo(HolidayDetails details) {
-    String data = "${details.daysDiff} ${Intl.plural(
-        details.daysDiff, one: "day", other: "days")}";
+    String data =
+        "${details.daysDiff} ${Intl.plural(details.daysDiff, one: "day", other: "days")}";
     return new Text(details.isPast ? "$data ago" : "$data to go",
         style: new TextStyle(fontStyle: FontStyle.italic));
   }
@@ -166,9 +167,8 @@ class _NlwHomePageState extends State<NlwHomePage> {
   }
 
   void shareDetails(HolidayDetails details) {
-    Share.share("${details.holidayName} on ${_monthFormatter.format(
-        details.holidayDate)} ${details.holidayDate.day}, ${details.holidayDate
-        .year}."
+    Share.share(
+        "${details.holidayName} on ${_monthFormatter.format(details.holidayDate)} ${details.holidayDate.day}, ${details.holidayDate.year}."
         "\n${details.holidayDetails}"
         "\nRead more at ${details.url}");
   }
@@ -274,14 +274,16 @@ class _NlwHomePageState extends State<NlwHomePage> {
               }
               Widget cardWidget = getCard(
                   holidayDetailsMap[_selectedCountry].elementAt(index), key);
-
-              return new Stack(
-                alignment: Alignment.topRight,
-                children: <Widget>[
+              return new AutoScrollTag(
+                key: ValueKey(index),
+                controller: scrollController,
+                index: index,
+                child:
+                    new Stack(alignment: Alignment.topRight, children: <Widget>[
                   cardWidget,
                   getWeekdayLabel(
                       holidayDetailsMap[_selectedCountry].elementAt(index))
-                ],
+                ]),
               );
             }));
   }
@@ -323,19 +325,9 @@ class _NlwHomePageState extends State<NlwHomePage> {
   }
 
   void scrollToNextHoliday() {
-    if (firstCardHeight == null && firstKey.currentContext != null) {
-      firstCardHeight = firstKey.currentContext.size.height;
-    }
-    if (firstCardHeight != null && firstCardHeight > 0.0) {
-      scrollToPosition(firstCardHeight * getNextHolidayIndex());
-      _nlwPosition = 0.0;
-    }
+    scrollController.scrollToIndex(getNextHolidayIndex(),
+        preferPosition: AutoScrollPosition.middle);
     handleTip();
-  }
-
-  void scrollToPosition(double offset) {
-    scrollController.animateTo(offset,
-        duration: new Duration(seconds: 2), curve: Curves.easeInOut);
   }
 
   void loadHolidayInfo() {
@@ -373,17 +365,16 @@ class _NlwHomePageState extends State<NlwHomePage> {
     if (prefs != null &&
         (prefs.getBool("hintShown") == null || !prefs.getBool("hintShown"))) {
       Scaffold.of(centerColumnKey.currentContext).showSnackBar(new SnackBar(
-            duration: new Duration(seconds: 30),
-            content: new Text("Switch country using the top dropdown!"),
-            action: SnackBarAction(
-              label: 'OK',
-              onPressed: () {
-                Scaffold
-                    .of(centerColumnKey.currentContext)
-                    .hideCurrentSnackBar(reason: SnackBarClosedReason.hide);
-              },
-            ),
-          ));
+        duration: new Duration(seconds: 30),
+        content: new Text("Switch country using the top dropdown!"),
+        action: SnackBarAction(
+          label: 'OK',
+          onPressed: () {
+            Scaffold.of(centerColumnKey.currentContext)
+                .hideCurrentSnackBar(reason: SnackBarClosedReason.hide);
+          },
+        ),
+      ));
       prefs.setBool("hintShown", true);
     }
   }
