@@ -158,15 +158,11 @@ class HolidayDetails extends HolidayInfo {
   int daysDiff;
 
   HolidayDetails(HolidayInfo holidayInfo, this.holidayDate)
-      : super(holidayInfo.holidayName, holidayInfo.holidayDetails,
-            holidayInfo.url) {
-    DateTime now = new DateTime.now();
-    DateTime today = new DateTime(now.year, now.month, now.day);
-    Duration difference = today.difference(holidayDate);
-    isPast = now.isAfter(holidayDate);
-    daysDiff = difference.inDays.abs();
-    isNextHoliday = false;
-  }
+      : isNextHoliday = false,
+        isPast = DateTime.now().isAfter(holidayDate),
+        daysDiff = DateTime.now().difference(holidayDate).inDays.abs(),
+        super(holidayInfo.holidayName, holidayInfo.holidayDetails,
+          holidayInfo.url);
 
   @override
   String toString() {

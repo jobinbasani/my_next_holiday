@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:my_next_holiday/services/AustraliaHolidayService.dart';
 import 'package:my_next_holiday/services/HolidayService.dart';
@@ -17,52 +16,51 @@ import 'package:share/share.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'dart:io' show Platform;
 
-void main() => runApp(new NlwApp());
+void main() => runApp(NlwApp());
 
 class NlwApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
+    return MaterialApp(
       title: 'My Next Holiday',
       debugShowCheckedModeBanner: false,
-      theme: new ThemeData(
+      theme: ThemeData(
         primarySwatch: Colors.green,
       ),
-      home: new NlwHomePage(title: 'My Next Holiday'),
+      home: NlwHomePage(title: 'My Next Holiday'),
     );
   }
 }
 
 class NlwHomePage extends StatefulWidget {
-  NlwHomePage({Key key, this.title}) : super(key: key);
+  NlwHomePage({Key? key, required this.title}) : super(key: key);
 
   final String title;
 
   @override
-  _NlwHomePageState createState() => new _NlwHomePageState();
+  _NlwHomePageState createState() => _NlwHomePageState();
 }
 
 class _NlwHomePageState extends State<NlwHomePage> {
-  static const platform = const MethodChannel('com.jobinbasani.nlw/services');
+  static const platform = MethodChannel('com.jobinbasani.nlw/services');
   static const COUNTRY_KEY = "country";
-  var dropdownMenuOptions;
+  List<DropdownMenuItem<String>>? dropdownMenuOptions;
   List<String> _countryList = [];
-  String _selectedCountry;
-  Map<String, HolidayService> _serviceMap = new HashMap();
-  Map<String, List<HolidayDetails>> holidayDetailsMap = new HashMap();
-  var _monthFormatter = new DateFormat("MMM");
-  var _weekDayFormatter = new DateFormat("E");
-  SharedPreferences prefs;
+  String? _selectedCountry;
+  Map<String, HolidayService> _serviceMap = HashMap();
+  Map<String, List<HolidayDetails>> holidayDetailsMap = HashMap();
+  var _monthFormatter = DateFormat("MMM");
+  var _weekDayFormatter = DateFormat("E");
+  late SharedPreferences prefs;
   final Color holidayWeekLabelColor = Colors.deepOrange;
   final _padding = const EdgeInsets.all(9.0);
-  final DateTime _startDate =
-      DateTime.now().subtract(new Duration(days: 30 * 6));
-  final DateTime _endDate = DateTime.now().add(new Duration(days: 30 * 18));
-  final firstKey = new GlobalKey();
-  final nlwKey = new GlobalKey();
-  final centerColumnKey = new GlobalKey();
-  double firstCardHeight;
-  AutoScrollController scrollController = new AutoScrollController();
+  final DateTime _startDate = DateTime.now().subtract(Duration(days: 30 * 6));
+  final DateTime _endDate = DateTime.now().add(Duration(days: 30 * 18));
+  final firstKey = GlobalKey();
+  final nlwKey = GlobalKey();
+  final centerColumnKey = GlobalKey();
+  late double firstCardHeight;
+  AutoScrollController scrollController = AutoScrollController();
   bool _isNextHolidayVisible = true;
   bool _isScrollTriggered = false;
   bool _isScrollUp = true;
@@ -70,21 +68,20 @@ class _NlwHomePageState extends State<NlwHomePage> {
   final String defaultCountryCode = "US";
 
   final List<HolidayService> _holidayServices = [
-    new UsaHolidayService(),
-    new CanadaHolidayService(),
-    new AustraliaHolidayService(),
-    new UkHolidayService()
+    UsaHolidayService(),
+    CanadaHolidayService(),
+    AustraliaHolidayService(),
+    UkHolidayService()
   ];
 
   Widget getFab() {
-    return new Opacity(
+    return Opacity(
       opacity: _isNextHolidayVisible ? 0.0 : 1.0,
-      child: new FloatingActionButton(
+      child: FloatingActionButton(
         onPressed: () {
           scrollToNextHoliday();
         },
-        child:
-            new Icon(_isScrollUp ? Icons.arrow_upward : Icons.arrow_downward),
+        child: Icon(_isScrollUp ? Icons.arrow_upward : Icons.arrow_downward),
       ),
     );
   }
@@ -92,20 +89,11 @@ class _NlwHomePageState extends State<NlwHomePage> {
   Widget getDaysToGo(HolidayDetails details) {
     String data =
         "${details.daysDiff} ${Intl.plural(details.daysDiff, one: "day", other: "days")}";
-    return new Text(details.isPast ? "$data ago" : "$data to go",
-        style: new TextStyle(fontStyle: FontStyle.italic));
+    return Text(details.isPast ? "$data ago" : "$data to go",
+        style: TextStyle(fontStyle: FontStyle.italic));
   }
 
-  Future<String> getDefaultSelectedCountry() async {
-    String country = prefs.getString(COUNTRY_KEY) ??
-        _holidayServices
-            .firstWhere((holidayService) =>
-                holidayService.getCountryCode() == defaultCountryCode)
-            .getCountry();
-    return _countryList.contains(country) ? country : _countryList.first;
-  }
-
-  Future<Null> launchCalendar(HolidayDetails details) async {
+  Future<void> launchCalendar(HolidayDetails details) async {
     if (Platform.isAndroid) {
       await platform.invokeMethod('openCalender',
           details.holidayDate.millisecondsSinceEpoch.toString());
@@ -113,53 +101,53 @@ class _NlwHomePageState extends State<NlwHomePage> {
   }
 
   Widget getDateAvatar(HolidayDetails details) {
-    return new CircleAvatar(
+    return CircleAvatar(
       backgroundColor:
-          details.isNextHoliday ? Colors.lightGreen : Colors.black45,
+      details.isNextHoliday ? Colors.lightGreen : Colors.black45,
       foregroundColor: Colors.white,
-      child: new Text(details.holidayDate.day.toString()),
+      child: Text(details.holidayDate.day.toString()),
     );
   }
 
   Widget getHolidayDetailsTile(HolidayDetails details) {
-    return new Expanded(
-      child: new ListTile(
-        title: new Text(
+    return Expanded(
+      child: ListTile(
+        title: Text(
           details.holidayName,
-          style: new TextStyle(
+          style: TextStyle(
               fontWeight:
-                  details.isNextHoliday ? FontWeight.bold : FontWeight.normal),
+              details.isNextHoliday ? FontWeight.bold : FontWeight.normal),
         ),
-        subtitle: new Text(details.holidayDetails),
+        subtitle: Text(details.holidayDetails),
       ),
     );
   }
 
   Widget getDateInfoBlock(HolidayDetails details) {
-    return new GestureDetector(
+    return GestureDetector(
       onTap: () {
         launchCalendar(details);
       },
-      child: new Column(
+      child: Column(
         children: <Widget>[
-          new Container(
+          Container(
             padding: _padding,
-            child: new Text(
+            child: Text(
               details.holidayDate.year.toString(),
-              style: new TextStyle(
+              style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: details.isNextHoliday ? Colors.green : Colors.black),
             ),
           ),
           getDateAvatar(details),
-          new Container(
+          Container(
             padding: _padding,
-            child: new Text(
+            child: Text(
                 _monthFormatter.format(details.holidayDate).toUpperCase(),
-                style: new TextStyle(
+                style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color:
-                        details.isNextHoliday ? Colors.green : Colors.black)),
+                    details.isNextHoliday ? Colors.green : Colors.black)),
           )
         ],
       ),
@@ -169,8 +157,8 @@ class _NlwHomePageState extends State<NlwHomePage> {
   void shareDetails(HolidayDetails details) {
     Share.share(
         "${details.holidayName} on ${_monthFormatter.format(details.holidayDate)} ${details.holidayDate.day}, ${details.holidayDate.year}."
-        "\n${details.holidayDetails}"
-        "\nRead more at ${details.url}");
+            "\n${details.holidayDetails}"
+            "\nRead more at ${details.url}");
   }
 
   void onListScroll() {
@@ -186,39 +174,38 @@ class _NlwHomePageState extends State<NlwHomePage> {
 
   Widget getButtonBar(HolidayDetails details) {
     List<Widget> buttons = [];
-    buttons.add(new FlatButton(
-      textColor: details.isNextHoliday ? Colors.green : Colors.black,
+    buttons.add(TextButton(
+      style: TextButton.styleFrom(
+        foregroundColor: details.isNextHoliday ? Colors.green : Colors.black,
+      ),
       child: const Text('READ MORE'),
       onPressed: () {
         _launchURL(details.url);
       },
     ));
     if (details.isNextHoliday) {
-      buttons.add(new FlatButton(
+      buttons.add(TextButton(
         child: const Text('SHARE'),
         onPressed: () {
           shareDetails(details);
         },
       ));
     }
-    return new Expanded(
-        child: new Align(
+    return Align(
       alignment: Alignment.centerRight,
-      child: new ButtonTheme.bar(
-        child: new ButtonBar(
-          children: buttons,
-        ),
+      child: ButtonBar(
+        children: buttons,
       ),
-    ));
+    );
   }
 
   Widget getWeekdayLabel(HolidayDetails details) {
-    return new Container(
-      child: new Text(
+    return Container(
+      child: Text(
         _weekDayFormatter.format(details.holidayDate).toUpperCase(),
-        style: new TextStyle(color: Colors.white),
+        style: TextStyle(color: Colors.white),
       ),
-      decoration: new BoxDecoration(
+      decoration: BoxDecoration(
           color: details.isNextHoliday ? holidayWeekLabelColor : Colors.grey),
       padding: const EdgeInsets.all(3.0),
       margin: const EdgeInsets.all(5.0),
@@ -226,45 +213,47 @@ class _NlwHomePageState extends State<NlwHomePage> {
   }
 
   void onCountrySelectionChange(String country) {
-    _selectedCountry = country;
-    loadHolidayInfo();
-    prefs.setString(COUNTRY_KEY, country);
-    _isScrollTriggered = false;
+    setState(() {
+      _selectedCountry = country;
+      loadHolidayInfo();
+      prefs.setString(COUNTRY_KEY, country);
+      _isScrollTriggered = false;
+    });
   }
 
   Widget _getDropDownWidget() {
-    return new Row(children: <Widget>[
-      new Expanded(
-          child: new Container(
-        padding: _padding,
-        child: new DropdownButtonHideUnderline(
-            child: new DropdownButton<String>(
-          value: _selectedCountry,
-          style:
-              new TextStyle(fontWeight: FontWeight.bold, color: Colors.green),
-          items: dropdownMenuOptions,
-          onChanged: (s) {
-            setState(() {
-              onCountrySelectionChange(s);
-            });
-          },
-        )),
-      ))
+    return Row(children: <Widget>[
+      Expanded(
+          child: Container(
+            padding: _padding,
+            child: DropdownButtonHideUnderline(
+                child: DropdownButton<String>(
+                  value: _selectedCountry,
+                  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green),
+                  items: dropdownMenuOptions,
+                  onChanged: (s) {
+                    if (s != null) {
+                      onCountrySelectionChange(s);
+                    }
+                  },
+                )),
+          ))
     ]);
   }
 
   int getNextHolidayIndex() {
-    return holidayDetailsMap[_selectedCountry].indexOf(
-        holidayDetailsMap[_selectedCountry]
-            .firstWhere((holidayInfo) => !holidayInfo.isPast));
+    List<HolidayDetails> holidayDetails =
+        holidayDetailsMap[_selectedCountry] ?? [];
+    int index = holidayDetails.indexWhere((holidayInfo) => !holidayInfo.isPast);
+    return index;
   }
 
   Widget _getHolidayListView() {
-    return new Expanded(
-        child: new ListView.builder(
+    return Expanded(
+        child: ListView.builder(
             controller: scrollController,
             padding: _padding,
-            itemCount: holidayDetailsMap[_selectedCountry].length,
+            itemCount: holidayDetailsMap[_selectedCountry]?.length ?? 0,
             itemBuilder: (context, index) {
               var key;
               if (index == 0) {
@@ -273,38 +262,39 @@ class _NlwHomePageState extends State<NlwHomePage> {
                 key = nlwKey;
               }
               Widget cardWidget = getCard(
-                  holidayDetailsMap[_selectedCountry].elementAt(index), key);
-              return new AutoScrollTag(
+                  holidayDetailsMap[_selectedCountry]!.elementAt(index),
+                  key != null ? key : ValueKey(index));
+              return AutoScrollTag(
                 key: ValueKey(index),
                 controller: scrollController,
                 index: index,
                 child:
-                    new Stack(alignment: Alignment.topRight, children: <Widget>[
+                Stack(alignment: Alignment.topRight, children: <Widget>[
                   cardWidget,
                   getWeekdayLabel(
-                      holidayDetailsMap[_selectedCountry].elementAt(index))
+                      holidayDetailsMap[_selectedCountry]!.elementAt(index))
                 ]),
               );
             }));
   }
 
   Widget getCard(HolidayDetails details, Key key) {
-    return new Card(
+    return Card(
       key: key,
-      child: new Column(
+      child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          new Row(
+          Row(
             mainAxisSize: MainAxisSize.max,
             children: <Widget>[
               getDateInfoBlock(details),
               getHolidayDetailsTile(details),
             ],
           ),
-          new Divider(),
-          new Row(
+          Divider(),
+          Row(
             children: <Widget>[
-              new Container(
+              Container(
                 padding: _padding,
                 child: getDaysToGo(details),
               ),
@@ -316,9 +306,10 @@ class _NlwHomePageState extends State<NlwHomePage> {
     );
   }
 
-  _launchURL(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url, forceWebView: true);
+  Future<void> _launchURL(String url) async {
+    Uri uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.inAppWebView);
     } else {
       throw 'Could not launch $url';
     }
@@ -331,77 +322,97 @@ class _NlwHomePageState extends State<NlwHomePage> {
   }
 
   void loadHolidayInfo() {
-    if (holidayDetailsMap[_selectedCountry].isEmpty) {
-      holidayDetailsMap[_selectedCountry].addAll(
-          _serviceMap[_selectedCountry].getHolidays(_startDate, _endDate));
+    if (holidayDetailsMap[_selectedCountry]!.isEmpty) {
+      holidayDetailsMap[_selectedCountry]?.addAll(_serviceMap[_selectedCountry]
+          ?.getHolidays(_startDate, _endDate) as Iterable<HolidayDetails>);
     }
   }
 
-  @override
   void initState() {
     super.initState();
-    SharedPreferences.getInstance().then((sharedPreferences) {
-      prefs = sharedPreferences;
+    initializePreferences().then((_) {
       _holidayServices.forEach((service) {
         _countryList.add(service.getCountry());
         _serviceMap.putIfAbsent(service.getCountry(), () => service);
         holidayDetailsMap.putIfAbsent(service.getCountry(), () => []);
       });
       _countryList.sort();
-      return getDefaultSelectedCountry();
-    }).then((selection) {
-      setState(() {
-        onCountrySelectionChange(selection);
-        dropdownMenuOptions = _countryList
-            .map((String item) => new DropdownMenuItem<String>(
-                value: item, child: new Text(item)))
-            .toList();
+      getDefaultSelectedCountry().then((selection) {
+        setState(() {
+          onCountrySelectionChange(selection);
+          dropdownMenuOptions = _countryList
+              .map((String item) => DropdownMenuItem<String>(
+              value: item, child: Text(item)))
+              .toList();
+        });
       });
     });
     scrollController.addListener(onListScroll);
   }
 
+  Future<String> getDefaultSelectedCountry() async {
+    // Ensure prefs is initialized before using it
+    if (!prefs.containsKey(COUNTRY_KEY)) {
+      // If prefs is not initialized or COUNTRY_KEY is not set, return a default value
+      return _holidayServices
+          .firstWhere((holidayService) =>
+      holidayService.getCountryCode() == defaultCountryCode)
+          .getCountry();
+    }
+    String country = prefs.getString(COUNTRY_KEY) ??
+        _holidayServices
+            .firstWhere((holidayService) =>
+        holidayService.getCountryCode() == defaultCountryCode)
+            .getCountry();
+    return _countryList.contains(country) ? country : _countryList.first;
+  }
+
+  Future<void> initializePreferences() async {
+    prefs = await SharedPreferences.getInstance();
+  }
+
   void handleTip() {
-    if (prefs != null &&
-        (prefs.getBool("hintShown") == null || !prefs.getBool("hintShown"))) {
-      Scaffold.of(centerColumnKey.currentContext).showSnackBar(new SnackBar(
-        duration: new Duration(seconds: 30),
-        content: new Text("Switch country using the top dropdown!"),
-        action: SnackBarAction(
-          label: 'OK',
-          onPressed: () {
-            Scaffold.of(centerColumnKey.currentContext)
-                .hideCurrentSnackBar(reason: SnackBarClosedReason.hide);
-          },
-        ),
-      ));
-      prefs.setBool("hintShown", true);
+    if (prefs.getBool("hintShown") != true) {
+      final BuildContext? context = centerColumnKey.currentContext;
+      if (context != null) {
+        final scaffoldMessenger = ScaffoldMessenger.of(context);
+        scaffoldMessenger.showSnackBar(
+          SnackBar(
+            duration: Duration(seconds: 30),
+            content: Text("Switch country using the top dropdown!"),
+            action: SnackBarAction(
+              label: 'OK',
+              onPressed: () {
+                scaffoldMessenger
+                    .hideCurrentSnackBar(reason: SnackBarClosedReason.hide);
+              },
+            ),
+          ),
+        );
+        prefs.setBool("hintShown", true);
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_selectedCountry == null) {
-      return new Container();
-    }
-
     if (!_isScrollTriggered) {
       WidgetsBinding.instance
           .scheduleFrameCallback((_) => scrollToNextHoliday());
     }
 
-    return new Scaffold(
-      appBar: new AppBar(
-        title: new Text(widget.title),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
       ),
-      body: new Builder(builder: (BuildContext context) {
-        return new Center(
+      body: Builder(builder: (BuildContext context) {
+        return Center(
           key: centerColumnKey,
-          child: new Column(
+          child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               _getDropDownWidget(),
-              _getHolidayListView(),
+              _selectedCountry != null ? _getHolidayListView() : Container(),
             ],
           ),
         );

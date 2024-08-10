@@ -5,7 +5,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.CalendarContract;
 
-import io.flutter.app.FlutterActivity;
+import io.flutter.embedding.android.FlutterActivity;
+import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugins.GeneratedPluginRegistrant;
@@ -15,22 +16,21 @@ public class MainActivity extends FlutterActivity {
     private static final String CHANNEL = "com.jobinbasani.nlw/services";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        GeneratedPluginRegistrant.registerWith(this);
+    public void configureFlutterEngine(FlutterEngine flutterEngine) {
+        GeneratedPluginRegistrant.registerWith(flutterEngine);
 
-        new MethodChannel(getFlutterView(), CHANNEL).setMethodCallHandler(new MethodChannel.MethodCallHandler() {
-            @Override
-            public void onMethodCall(MethodCall methodCall, MethodChannel.Result result) {
-                if (methodCall.method.equals("openCalender")) {
-                    openCalendar(methodCall.arguments.toString());
-                    result.success(null);
-                } else {
-                    result.notImplemented();
-                }
-            }
-        });
-
+        new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), CHANNEL)
+                .setMethodCallHandler(new MethodChannel.MethodCallHandler() {
+                    @Override
+                    public void onMethodCall(MethodCall methodCall, MethodChannel.Result result) {
+                        if (methodCall.method.equals("openCalendar")) {
+                            openCalendar(methodCall.arguments.toString());
+                            result.success(null);
+                        } else {
+                            result.notImplemented();
+                        }
+                    }
+                });
     }
 
     private void openCalendar(String timestamp) {
