@@ -10,9 +10,9 @@ import 'package:my_next_holiday/services/UkHolidayService.dart';
 import 'package:my_next_holiday/services/UsaHolidayService.dart';
 import 'package:my_next_holiday/vo/HolidayDetails.dart';
 import 'package:intl/intl.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:share/share.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'dart:io' show Platform;
 
@@ -155,10 +155,9 @@ class _NlwHomePageState extends State<NlwHomePage> {
   }
 
   void shareDetails(HolidayDetails details) {
-    Share.share(
-        "${details.holidayName} on ${_monthFormatter.format(details.holidayDate)} ${details.holidayDate.day}, ${details.holidayDate.year}."
-            "\n${details.holidayDetails}"
-            "\nRead more at ${details.url}");
+    SharePlus.instance.share(ShareParams(text: "${details.holidayName} on ${_monthFormatter.format(details.holidayDate)} ${details.holidayDate.day}, ${details.holidayDate.year}."
+        "\n${details.holidayDetails}"
+        "\nRead more at ${details.url}"));
   }
 
   void onListScroll() {
